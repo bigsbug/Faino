@@ -7,24 +7,29 @@ from channels.exceptions import StopConsumer
 # from channels.signals import  
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
+
     async def connect(self): 
         device = self.scope['device']
-        if device is not None:
+
+        if device is not None: 
+
             await self.accept()
             print('Channel Name :',self.channel_name,"Token : ",str(device.token))
             await self.channel_layer.group_add(str(device.token),self.channel_name)
             print('accept')
             await self.Change_status_device(True)
             exist_new_status = await self.Get_NewStatus_server()
+
             if exist_new_status:
                 print('******************RUN*******************')
                 await self.Change_status_command()
                 await self.send_json(exist_new_status)
+
             print('***************DONE****************')
     
         else:
             print('UnAccept')
-            await self.close()
+            await self.close() # check device authentication in middleware and if not auth automatica reject request with error 403
 
 
     async def disconnect(self,code):
@@ -33,7 +38,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.channel_layer.group_discard(str(device.token),self.channel_name)
         except:
             pass
-        raise StopConsumer()
+        raise StopConsumer() # rise an error for stop and close socket connection
 
     @database_sync_to_async
     def Change_status_device(self,status = False):
