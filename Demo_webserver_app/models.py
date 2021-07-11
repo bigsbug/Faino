@@ -12,21 +12,11 @@ class Profile(models.Model):
     company = models.fields.CharField(max_length=60,blank=True)
     membership = models.DateTimeField(null=True)
 
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(check= models.Q(phone__gte =9),name='min_length 11'),
-    #         ]
-
     def __str__(self):
         return self.name
 
 class Type(models.Model):
     name = models.CharField(max_length=62,primary_key=True,blank=False,unique=True)
-
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(check= models.Q(name__gte =4),name='min_length >= 4'),
-    #     ]
 
     def __str__(self) -> str:
         return self.name
@@ -45,7 +35,7 @@ class Device(models.Model):
 class Data(models.Model):
     device = models.ForeignKey(Device,on_delete=models.CASCADE,related_name='Data_Device')
     data = models.JSONField()
-
+    date = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.device.name
 
@@ -53,6 +43,8 @@ class NewStatus(models.Model):
     device = models.OneToOneField(Device,on_delete=models.CASCADE,related_name="New_Status_Device",primary_key=True,unique=True)
     data = models.JSONField()
     complated = models.fields.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.device.name
+
