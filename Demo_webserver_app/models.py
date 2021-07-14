@@ -26,7 +26,7 @@ class Device(models.Model):
     type = models.ForeignKey(Type,on_delete=models.CASCADE)
     name = models.fields.CharField(max_length=36)
     description = models.fields.TextField(max_length=600,blank=True)
-    user = models.ForeignKey(Profile,related_name='Device_user',on_delete=models.CASCADE)
+    user = models.ForeignKey(User,related_name='Device_user',on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     def __str__(self):
         return self.name
