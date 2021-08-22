@@ -1,0 +1,62 @@
+
+Name : Rigister 
+Link : https://testwbs.pagekite.me/api/token
+Method : Post
+Type : Json
+Args Header : 
+Args Contact : usernaem,password
+Return : access , refresh
+
+Name : Refresh Token Access
+Link : https://testwbs.pagekite.me/api/token/refresh
+Method : Post
+Type : Json
+Args Header : refresh : token_refresh
+Args Contact : 
+Return : access 
+
+Name : Verify Token Access 
+Link : https://testwbs.pagekite.me/api/token/verify
+Method : Post
+Type : Json
+Args Header : 
+Args Contact : token : token_access
+Return : True / False
+
+Name : Device 
+Link : https://testwbs.pagekite.me/devices/
+Method : Post / Get
+Type : Json
+Args Header : Authorization : JWT token_access
+Args Contact [Method Get] :
+Args Contact [Method Post] : type : name_type ,  token : device_token
+Return : data 
+description :
+    Method Get  : return all devices
+    Method Post :‌ if send only [type] to api you well get all detail of the devices with same type
+    and if send [token] the of a special device you get all detail of that
+
+
+Name : User Info 
+Link : https://testwbs.pagekite.me/info_user/
+Method : Post
+Type : Json
+Args Header : Authorization : JWT token_access
+Args Contact : 
+Return : detail user
+
+Name : Data Devices
+Link : https://testwbs.pagekite.me/data/
+Method : Post
+Type : Json
+Args Header : Authorization : JWT token_access
+Args Contact : token : device_token
+Return : data of device
+
+Name : Status Device
+Link : https://testwbs.pagekite.me/status
+Method : Post
+Type : Json
+Args Header : Authorization : JWT token_access
+Args Contact : token : device_token , data : status_data , complated : true/false
+Return : Created/Bad_Request

@@ -9,21 +9,17 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 
 import os
 
-from channels.routing import ProtocolTypeRouter,URLRouter
-from Demo_webserver_app.authMiddlware import MiddleWareStack_authToken
+from channels.routing import ProtocolTypeRouter, URLRouter
+from WEB_SERVER.authMiddlware import MiddleWareStack_authToken
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
-from Demo_webserver_app.router import websocket_urlpatterns
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'WebServer.settings')
+from WEB_SERVER.router import websocket_urlpatterns
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WebServer.settings")
 
 application = ProtocolTypeRouter(
-
     {
-        'http':get_asgi_application(),
-        "websocket": MiddleWareStack_authToken(
-        URLRouter(
-            websocket_urlpatterns
-        )
-    ),
+        "http": get_asgi_application(),
+        "websocket": MiddleWareStack_authToken(URLRouter(websocket_urlpatterns)),
     }
 )
