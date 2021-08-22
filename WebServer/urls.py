@@ -26,7 +26,7 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(),
          name="token_pair_refresh"),
-    path("api/token/verify/", TokenVerifyView.as_view(), name="token_pair_verify"),
+    # path("api/token/verify/", TokenVerifyView.as_view(), name="token_pair_verify"),
     path("", include("WEB_SERVER.urls")),
     path("", include("AUTH_SYSTEM.urls")),
 ]
