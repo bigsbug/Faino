@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework import fields
 from rest_framework.fields import UUIDField
-from .models import Device, Data, Type, Command, Button
+from WEB_SERVER.models import Device, Data, Type, Command, Button
 from django.contrib.auth.models import User
 
 
@@ -18,8 +18,7 @@ class Serializer_Device(serializers.ModelSerializer):
     def get_buttons(self, *args, **kwargs):
         this_device = args[0]
         return Serializer_Buttons(
-            Button.objects.filter(device=this_device), many=True
-        ).data
+            Button.objects.filter(device=this_device)[0:5], many=True).data
 
     class Meta:
         model = Device
