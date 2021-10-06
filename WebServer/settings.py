@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-
+import os, glob
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +28,12 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 APPEND_SLASH = True
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'booxtestboox@gmail.com'
+EMAIL_HOST_PASSWORD = 'nova_man'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,11 +45,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-
+    "django.contrib.sites",
     # Apss
     "WEB_SERVER.apps.WebServerAppConfig",
     "AUTH_SYSTEM.apps.AuthSystemConfig",
 ]
+SITE_ID = 2
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -102,6 +109,9 @@ DATABASES = {
         "PASSWROD": "novaman",
         "HOST": "localhost",
         "PORT": "5432",
+        "TEST": {
+            "NAME": "Testing_DB"
+        }
     }
 }
 
@@ -126,10 +136,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-AUTH_USER_MODEL = 'AUTH_SYSTEM.New_User'
+AUTH_USER_MODEL = "AUTH_SYSTEM.New_User"
 AUTHENTICATION_BACKENDS = [
     # 'AUTH_SYSTEM.auth_system.Custom_User_BackendModel',
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -148,13 +158,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_DIRS = [
     # STATIC_ROOT,
     # BASE_DIR,
 ]
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+path_fixtures = str(BASE_DIR / r'*//fixture')
+FIXTURE_DIRS = glob.glob(path_fixtures)
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":

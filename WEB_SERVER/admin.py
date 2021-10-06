@@ -1,5 +1,5 @@
 from django.contrib import admin
-from WEB_SERVER.models import Device, Data, Command, Type, Button
+from WEB_SERVER.models import Device, Data, Command, Source_Device, Type, Button
 
 
 class Device_Register(admin.ModelAdmin):
@@ -23,4 +23,5 @@ admin.site.register(Device, Device_Register)
 admin.site.register(Data, Data_Register)
 admin.site.register(Command, Command_Register)
 admin.site.register(Type)
+admin.site.register(Source_Device)
 admin.site.register(Button, Button_Register)

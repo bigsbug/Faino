@@ -3,6 +3,7 @@ from channels.db import database_sync_to_async
 from django.http.response import HttpResponseNotAllowed
 from .models import Device
 
+import json
 
 class TokenAuth_middleware:
     def __init__(self, inner):
@@ -13,14 +14,16 @@ class TokenAuth_middleware:
         headers = dict(scope["headers"])
 
         try:
-            # print(headers)
-            Token = headers[b"token"].decode()
-            device = await self.ChackToken(Token)
+            # print(scope)
+            extra_header = headers[b"extra-header"].decode()
+            extra_header = json.loads(extra_header)
+            device = await self.ChackToken(extra_header['token'])
+            scope['extra-header'] = extra_header
             scope["device"] = device
             return await self.inner(scope, *args)
 
         except Exception as Error:
-            # print(f"Error : {Error}\n"+'*'*10)
+            print(f"Error : {Error}\n"+'*'*10)
             scope["device"] = None
             return await self.inner(scope, *args)
 

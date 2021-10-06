@@ -1,0 +1,63 @@
+[
+{
+      "model": "WEB_SERVER.type",
+      "pk": "Light",
+      "fields": {}
+},
+{
+      "model": "WEB_SERVER.device",
+      "pk": "acf8d707-2127-447a-9821-7d30ef0b0c9a",
+      "fields": {
+            "type": "Light",
+            "name": "PC",
+            "ip": "127.0.0.1",
+            "password": "SUPERNVOA",
+            "mac": "192.0.0.1",
+            "description": "example description",
+            "user": 1,
+            "status": true
+      }
+},
+{
+      "model": "WEB_SERVER.device",
+      "pk": "c58afb0e-10b5-406e-a6dd-c1ee4a8d03f7",
+      "fields": {
+            "type": "Light",
+            "name": "PC 2",
+            "ip": "127.0.0.3",
+            "password": "SUPERNVOA",
+            "mac": "192.0.0.3",
+            "description": "noting",
+            "user": 1,
+            "status": false
+      }
+},
+{
+      "model": "WEB_SERVER.device",
+      "pk": "da908b69-00d9-42d7-8d2b-cba5009b76bf",
+      "fields": {
+            "type": "Light",
+            "name": "GSM",
+            "ip": "127.0.0.1",
+            "password": "SUPERNVOA",
+            "mac": "192.0.0.1",
+            "description": "example",
+            "user": 1,
+            "status": false
+      }
+},
+{
+      "model": "WEB_SERVER.device",
+      "pk": "e493ae2b-34ba-4d97-97c9-721373862692",
+      "fields": {
+            "type": "Light",
+            "name": "LIght Room",
+            "ip": "127.0.0.4",
+            "password": "JBTq9GAG5W8",
+            "mac": "192.0.0.4",
+            "description": "",
+            "user": 1,
+            "status": false
+      }
+}
+]
