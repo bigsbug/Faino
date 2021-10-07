@@ -1,7 +1,7 @@
 from typing import Union
 
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.http import Http404
 from django.views.generic.base import View
 from rest_framework import permissions, serializers
@@ -17,6 +17,11 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from .models import New_User, Confirm_User
 
 from rest_framework import permissions
+from django.template.loader import render_to_string
+
+
+def index(request):
+    return render(request, 'verify_account.html', {"active_code": '1275 5690'})
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -34,6 +39,7 @@ class Confrim_Email(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
+
         data = request.data.copy()
         data['expire'] = Confirm_User.expire_time()
         data['code'] = Confirm_User.random_code()
@@ -57,12 +63,15 @@ class Confrim_Email(APIView):
                                           partial=True)
         if confirm.is_valid(True):
             confirm = confirm.save()
+        template = 'verify_account.html'
+        context = {'active_code': confirm.code}
+        html_template = render_to_string(template, context)
 
         SendEmail(
-            'Confirm Code',
-            f'Your Confirme Code is {confirm.code}',
-            [email_address],
-            f'<h1>Your Activation Code is {confirm.code}</h1></br>',
+            "کد احراز هویت",
+            "کد احراز هویت شما {confirm.code} میباشد",
+            [user.email],
+            html_template,
         )
 
         return HttpResponse('check you email')
@@ -114,11 +123,15 @@ class Forget_Password(APIView):
         if confirm.is_valid(True):
             confirm = confirm.save()
 
+        template = 'forget_password.html'
+        context = {'active_code': confirm.code}
+        html_template = render_to_string(template, context)
+
         SendEmail(
-            'Confirm Code',
-            f'Your Confirme Code is {confirm.code}',
-            [email_address],
-            f'<h1>Your Activation Code is {confirm.code}</h1></br>',
+            "درخواست تغییر رمز عبور",
+            "کد احراز هویت شما {confirm.code} میباشد",
+            [user.email],
+            html_template,
         )
 
         return HttpResponse('check you email')
@@ -169,13 +182,19 @@ class User_API(APIView):
             if confirm.is_valid(True):
                 confirm = confirm.save()
 
+            template = 'verify_account.html'
+            context = {'active_code': confirm.code}
+            html_template = render_to_string(template, context)
+
             SendEmail(
-                'Confirm Your Email',
-                f'Your Confirme Code is {confirm.code}',
+                "کد احراز هویت",
+                "کد احراز هویت شما {confirm.code} میباشد",
                 [user.email],
-                f'<h1>Your Activation Code is {confirm.code}</h1></br>',
+                html_template,
             )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, reqeust) -> Union[Response]:
