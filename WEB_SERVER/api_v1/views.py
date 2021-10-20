@@ -181,9 +181,9 @@ class Device(ViewSet):
 
     @action(
         detail=True,
-        # url_path=r"button/(?P<id>\w+)/",
-        url_path=r"button_retrieve/(?P<id>[^/.]+)",
-        # methods=["GET"]
+        url_path=r"button/(?P<id>\w+)",
+        # url_path=r"button_retrieve/(?P<id>[^/.]+)",
+        # methods=["GET"],
         url_name='button_retrieve')
     def button_retrieve(self, request, pk, id) -> Union[Response, Http404]:
         data = request.data
