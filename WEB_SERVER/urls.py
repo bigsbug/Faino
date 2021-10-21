@@ -16,7 +16,7 @@ from .views import (
 
 app_name = 'WEBSERVER'
 urlpatterns = [
-    path("", index),
+    # path("", index),
     path("update/<uuid:link>", Update_device, name="UPDATE_LINK"),
     path('api/', include(api_urls), name='API'),
     # # Device urls
