@@ -41,14 +41,17 @@ def get_client_ip_2(headers):
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self, *args, **kwargs):
-        headers = self.scope['headers']
-        ip = get_client_ip_2(headers)
-        print(ip)
-        self.device = self.scope["device"]
-        self.extra_header = self.scope["extra-header"]
 
-        version = await self.valid_version(self.extra_header)
-        if self.device is not None and version:
+        headers = self.scope['headers']
+        version = self.scope['version']
+        print(version)
+        self.device = self.scope['device']
+        ip = get_client_ip_2(headers)
+        # print(ip)
+        # self.device = self.scope["device"]
+        # self.extra_header = self.scope["extra-header"]
+
+        if self.device is not None:
 
             await self.accept()
             print("Channel Name :", self.channel_name, "Token : ",
@@ -68,41 +71,26 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
             status_update = await self.Check_update(version)
             if status_update == True:
-                link_update = await self.Make_link("127.0.0.1")
-                print(link_update)
+                link_update = await self.Make_link(ip)
+                # print(link_update)
                 data = {"datatype": "update", "data": link_update}
-                # data= json.dumps(data)
-                # print(data)
 
-                await self.send_json({
-                    "datatype": "update",
-                    "data": link_update
-                })
+                # data= json.dumps(data)
+                print(data)
+
+                await self.send_json(data)
 
         else:
             print("UnAccept")
             await self.close(
             )  # check device authentication in middleware and if not auth automatica reject request with error 403
 
-    async def valid_version(self, extra_header: dict) -> bool:
-        if "version" in extra_header:
-            version = extra_header["version"]
-            try:
-                print(version)
-                return float(version)
-            except Exception as Error:
-                print(Error)
-                return False
-        else:
-            print("ELSE")
-            return False
-
     @database_sync_to_async
     def Make_link(self, ip: str) -> str:
         temp_link = Temp_link(ip=ip, file=self.source.source)
         temp_link.save()
         domain = Site.objects.all()[0].domain
-        app_url = reverse("UPDATE_LINK", args=(temp_link.link, ))
+        app_url = reverse("WEBSERVER:UPDATE_LINK", args=(temp_link.link, ))
         full_url = fr"http://{domain}{app_url}"
         return full_url
 
