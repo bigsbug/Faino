@@ -20,10 +20,6 @@ from rest_framework import permissions
 from django.template.loader import render_to_string
 
 
-def index(request):
-    return render(request, 'verify_account.html', {"active_code": '1275 5690'})
-
-
 def SendEmail(subject: str, body: str, email: list, html: str):
     email = EmailMultiAlternatives(
         subject,
@@ -51,7 +47,7 @@ class Confrim_Email(APIView):
             data['user'] = user.pk
         except:
             return HttpResponse('invalid user')
-        if user.is_active:
+        if user.is_active == True:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
             confrim_model = Confirm_User.objects.get(user=user)
@@ -64,7 +60,10 @@ class Confrim_Email(APIView):
         if confirm.is_valid(True):
             confirm = confirm.save()
         template = 'verify_account.html'
-        context = {'active_code': confirm.code}
+        context = {
+            'active_code': confirm.code,
+            'domain': request.META['HTTP_HOST'],
+        }
         html_template = render_to_string(template, context)
 
         SendEmail(
@@ -78,8 +77,8 @@ class Confrim_Email(APIView):
 
     def post(self, request):
         data = request.POST
-        user = New_User.objects.get(email=data.get('email', None))
-        confirm_user = Confirm_User.objects.get(user=user)
+        user = get_object_or_404(New_User, email=data.get('email', None))
+        confirm_user = get_object_or_404(Confirm_User, user=user)
 
         if confirm_user.valid_code(data.get('code', 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
@@ -124,7 +123,10 @@ class Forget_Password(APIView):
             confirm = confirm.save()
 
         template = 'forget_password.html'
-        context = {'active_code': confirm.code}
+        context = {
+            'active_code': confirm.code,
+            'domain': reqeust.META['HTTP_HOST']
+        }
         html_template = render_to_string(template, context)
 
         SendEmail(
@@ -138,8 +140,12 @@ class Forget_Password(APIView):
 
     def post(self, request):
         data = request.POST
-        user = New_User.objects.get(email=data.get('email', None))
-        confirm_user = Confirm_User.objects.get(user=user)
+        user = get_object_or_404(New_User, email=data.get('email', None))
+        confirm_user = get_object_or_404(Confirm_User, user=user)
+
+        # user = New_User.objects.get(email=data.get('email', None))
+        # confirm_user = Confirm_User.objects.get(user=user)
+
         if confirm_user.valid_code(data.get('code', 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
         password1 = data.get('password', 0)
@@ -171,28 +177,7 @@ class User_API(APIView):
         if serializer.is_valid(True):
             password: str = serializer.validated_data["password"]
             hashed_password = self.hash_password(password)
-            user = serializer.save(password=hashed_password)
-            confirm = {}
-            confirm['expire'] = Confirm_User.expire_time()
-            confirm['code'] = Confirm_User.random_code()
-            confirm['user'] = user.pk
-            confirm = Serializer_Confirm_User(instance=user,
-                                              data=confirm,
-                                              partial=True)
-            if confirm.is_valid(True):
-                confirm = confirm.save()
-
-            template = 'verify_account.html'
-            context = {'active_code': confirm.code}
-            html_template = render_to_string(template, context)
-
-            SendEmail(
-                "کد احراز هویت",
-                "کد احراز هویت شما {confirm.code} میباشد",
-                [user.email],
-                html_template,
-            )
-
+            user = serializer.save(password=hashed_password, is_active=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
