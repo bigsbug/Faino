@@ -13,7 +13,7 @@ class New_User(AbstractUser):
     email = models.EmailField(unique=True)
     membership = models.DateTimeField(blank=True, null=True)
     is_staff = models.BooleanField(default=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
 
 def make_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
