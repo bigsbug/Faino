@@ -1,9 +1,10 @@
 from channels.auth import AuthMiddlewareStack
 from channels.db import database_sync_to_async
-from django.http.response import HttpResponseNotAllowed
+from django.http.response import HttpResponseBadRequest, HttpResponseNotAllowed
 from .models import Device
-
+import base64
 import json
+
 
 class TokenAuth_middleware:
     def __init__(self, inner):
@@ -12,23 +13,34 @@ class TokenAuth_middleware:
     async def __call__(self, scope, *args):
 
         headers = dict(scope["headers"])
+        if b'extra-header' not in headers:
+            print('cant find ExtraHeader in headers')
+            return HttpResponseBadRequest()
 
-        try:
-            # print(scope)
-            extra_header = headers[b"extra-header"].decode()
-            extra_header = json.loads(extra_header)
-            device = await self.ChackToken(extra_header['token'])
-            scope['extra-header'] = extra_header
-            scope["device"] = device
-            return await self.inner(scope, *args)
+        # try:
+        encoded_value = headers[b"extra-header"]
+        extra_header = base64.b64decode(encoded_value)
+        extra_header = json.loads(extra_header.lower())
 
-        except Exception as Error:
-            print(f"Error : {Error}\n"+'*'*10)
-            scope["device"] = None
-            return await self.inner(scope, *args)
+        device = await self.CheckToken(extra_header['token'])
+        # scope['extra-header'] = extra_header
+
+        if 'version' not in extra_header and 'token' not in extra_header:
+            print('cant find version or token in ExtrHeader')
+            return HttpResponseNotAllowed()
+
+        scope["device"] = device
+        scope['version'] = float(extra_header['version'])
+
+        return await self.inner(scope, *args)
+
+        # except Exception as Error:
+        #     print(f"Error : {Error}\n" + '*' * 10)
+        #     scope["device"] = None
+        #     return await self.inner(scope, *args)
 
     @database_sync_to_async
-    def ChackToken(self, Token):
+    def CheckToken(self, Token):
         try:  # try if exist a device with same token return a object of that
             device = Device.objects.get(token=Token)
             print("Valid Token")
@@ -41,5 +53,4 @@ class TokenAuth_middleware:
 
 
 MiddleWareStack_authToken = lambda inner: TokenAuth_middleware(
-    AuthMiddlewareStack(inner)
-)
+    AuthMiddlewareStack(inner))
