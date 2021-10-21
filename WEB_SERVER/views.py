@@ -15,10 +15,10 @@ from django.core.mail import send_mail, EmailMessage
 def Update_device(request, link):
 
     temp = get_object_or_404(Temp_link, link=link)
-    ip_client = get_client_ip(request)
-    print(ip_client)
-    if temp.check_expired == True or temp.check_ip(ip_client) == False:
-        return Http404()
+    # ip_client = get_client_ip(request)
+    # print(ip_client)
+    # if temp.check_expired == True or temp.check_ip(ip_client) == False:
+    #     return Http404()
 
     file = temp.file
     filename = file.name
@@ -31,13 +31,6 @@ def Update_device(request, link):
 
 def index(request) -> HttpResponse:
     ip = get_client_ip(request)
-
-    email = EmailMessage('Test Send Email',
-                         'This is a Test Email',
-                         to=[
-                             'booxgitboox@gmail.com',
-                         ])
-    email.send()
     # data = ""
     # # for key, value in request.META.items():
     # #     data += f"{key} : {value} </br>"
