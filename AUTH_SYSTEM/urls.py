@@ -2,7 +2,7 @@ from os import name
 from re import I
 from django.db.models.fields.related import ForeignKey
 from django.urls import path
-from AUTH_SYSTEM.views import Forget_Password, User_API, Confrim_Email, index
+from AUTH_SYSTEM.views import Forget_Password, User_API, Confrim_Email
 from rest_framework.routers import DefaultRouter
 
 # router = DefaultRouter()
@@ -10,7 +10,6 @@ from rest_framework.routers import DefaultRouter
 # urlpatterns = router.urls
 
 urlpatterns = [
-    path("index/", index, name="index"),
     path("singup/", User_API.as_view(), name="USER_API"),
     path('forget_password/', Forget_Password.as_view(),
          name='FORGET_PASSWROD'),
