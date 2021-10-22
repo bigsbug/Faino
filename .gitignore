@@ -1,3 +1,6 @@
 *.pyc
 *~
 *.swp
+sources/*
+.env.production
+.env.development
