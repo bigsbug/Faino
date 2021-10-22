@@ -17,9 +17,9 @@ class Serializer_Device(serializers.ModelSerializer):
 
     def get_buttons(self, *args, **kwargs):
         this_device = args[0]
-        return Serializer_Buttons(
-            Button.objects.filter(device=this_device)[0:5], many=True
-        ).data
+        buttons_records = Button.objects.filter(device=this_device,
+                                                is_star=True)[0:5]
+        return Serializer_Buttons(buttons_records, many=True).data
 
     class Meta:
         model = Device
