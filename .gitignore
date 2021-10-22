@@ -2,5 +2,5 @@
 *~
 *.swp
 sources/*
-.env.production
-.env.development
+.env.devlopment
+.dev.production
