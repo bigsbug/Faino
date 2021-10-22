@@ -42,16 +42,20 @@ def on_open(ws):
 #     ws.close()
 #     print("thread terminating...")
 # thread.start_new_thread(run, ())
-token = "910244e5-3f00-4957-a417-924b2d1baf84"
-version = "0.03"
-extra_header = {"token": token, "version": version}
-header = {"extra-header": json.dumps(extra_header)}
+# token = "910244e5-3f00-4957-a417-924b2d1baf84"
+# version = "0.03"
+# extra_header = {"token": token, "version": version}
+header = {
+    "extra-header":
+    '["token :afb2ed6c-a1a1-4c1a-837b-f49ff7e9c603", "version: 0.01"]'
+}
 print(header)
 
 websocket.enableTrace(True)
 # address = input('address: ')
-# address = "localhost:8000"
-address = "0362419b1a1080.localhost.run"
+# address = "139.180.171.110:22248"
+address = "llsmiko.pagekite.me:443"
+# address = "0362419b1a1080.localhost.run"
 ws = websocket.WebSocketApp(
     f"ws://{address}",
     on_message=on_message,
