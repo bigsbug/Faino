@@ -3,5 +3,5 @@
 *.swp
 sources/*
 .env.devlopment
-.dev.production
-*WebServer_db
+.env.production
+*Core_db

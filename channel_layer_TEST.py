@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "WebServer.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Core.settings")
 
 import django
 

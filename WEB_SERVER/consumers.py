@@ -26,38 +26,42 @@ def get_client_ip_2(headers):
     for key, value in dict(headers).items():
 
         META[key.decode("utf-8")] = value.decode("utf-8")
-    x_forwarded_for = META.get('x-forwarded-for')
-    x_real_real_ip = META.get('x-real-ip')
+    for key, item in META.items():
+        print(f"{key} : {item}")
+    x_forwarded_for = META.get("x-forwarded-for")
+    x_real_real_ip = META.get("x-real-ip")
     if x_real_real_ip:
 
         ip = x_real_real_ip
     elif x_forwarded_for:
         print(x_forwarded_for)
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(",")[0]
     else:
-        ip = META.get('remote-addr')
+        ip = META.get("remote-addr")
     return ip
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self, *args, **kwargs):
 
-        headers = self.scope['headers']
-        version = self.scope['version']
+        headers = self.scope["headers"]
+        version = self.scope["version"]
         print(version)
-        self.device = self.scope['device']
+        self.device = self.scope["device"]
         ip = get_client_ip_2(headers)
-        # print(ip)
+        print(ip)
         # self.device = self.scope["device"]
         # self.extra_header = self.scope["extra-header"]
 
         if self.device is not None:
 
             await self.accept()
-            print("Channel Name :", self.channel_name, "Token : ",
-                  str(self.device.token))
-            await self.channel_layer.group_add(str(self.device.token),
-                                               self.channel_name)
+            print(
+                "Channel Name :", self.channel_name, "Token : ", str(self.device.token)
+            )
+            await self.channel_layer.group_add(
+                str(self.device.token), self.channel_name
+            )
             print("accept")
             await self.Change_status_device(True)
             exist_new_status = await self.Get_Command_Server()
@@ -82,27 +86,26 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         else:
             print("UnAccept")
-            await self.close(
-            )  # check device authentication in middleware and if not auth automatica reject request with error 403
+            await self.close()  # check device authentication in middleware and if not auth automatica reject request with error 403
 
     @database_sync_to_async
     def Make_link(self, ip: str) -> str:
         temp_link = Temp_link(ip=ip, file=self.source.source)
         temp_link.save()
         domain = Site.objects.all()[0].domain
-        app_url = reverse("WEBSERVER:UPDATE_LINK", args=(temp_link.link, ))
+        app_url = reverse("WEBSERVER:UPDATE_LINK", args=(temp_link.link,))
         full_url = fr"http://{domain}{app_url}"
         return full_url
 
     async def disconnect(self, code):
         try:
             await self.Change_status_device(False)
-            await self.channel_layer.group_discard(str(self.device.token),
-                                                   self.channel_name)
+            await self.channel_layer.group_discard(
+                str(self.device.token), self.channel_name
+            )
         except:
             pass
-        raise StopConsumer(
-        )  # rise an error for stop and close socket connection
+        raise StopConsumer()  # rise an error for stop and close socket connection
 
     @database_sync_to_async
     def Check_update(self, version: float):
