@@ -1,4 +1,4 @@
-"""WebServer URL Configuration
+"""Core URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -15,15 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_pair"),
-    path("api/token/refresh/",
-         TokenRefreshView.as_view(),
-         name="token_pair_refresh"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_pair_refresh"),
     # path("api/token/verify/", TokenVerifyView.as_view(), name="token_pair_verify"),
     path("", include("WEB_SERVER.urls")),
     # path("api/", include("WEB_SERVER.api_v1.urls")),

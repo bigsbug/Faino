@@ -1,16 +1,12 @@
-# from django.test import TestCase
 import json
 from sys import version
 import json
+import base64
+from threading import Thread
+from time import sleep
 
 # Create your tests here.
 import websocket
-
-try:
-    import thread
-except ImportError:
-    import _thread as thread
-import time
 
 
 def on_message(ws, message):
@@ -22,7 +18,7 @@ def on_error(ws, error):
     print(error)
 
 
-def on_close(ws):
+def on_close(ws, *args):
     print("### closed ###")
 
 
@@ -30,40 +26,35 @@ def on_open(ws):
     print("OPEN new Websocket")
 
 
-#     ws.send('''{
-#   "Message":"Hello"
-# }''')
-# ws.send('{ "type": "ChatConsumer.SetData"}')
-# def run(*args):
-#     for i in range(3):
-#         time.sleep(1)
-#         ws.send("Hello %d" % i)
-#     time.sleep(1)
-#     ws.close()
-#     print("thread terminating...")
-# thread.start_new_thread(run, ())
-# token = "910244e5-3f00-4957-a417-924b2d1baf84"
-# version = "0.03"
-# extra_header = {"token": token, "version": version}
-header = {
-    "extra-header":
-    '["token :afb2ed6c-a1a1-4c1a-837b-f49ff7e9c603", "version: 0.01"]'
-}
+data = '{"token" :"d06dd64b-f5c2-4f57-a270-975035037f5d", "version": "0.01"}'.encode(
+    "ascii"
+)
+data = base64.b64encode(data)
+data = data.decode("ascii")
+
+header = {"extra-header": data}
 print(header)
 
 websocket.enableTrace(True)
-# address = input('address: ')
-# address = "139.180.171.110:22248"
-address = "llsmiko.pagekite.me:443"
-# address = "0362419b1a1080.localhost.run"
-ws = websocket.WebSocketApp(
-    f"ws://{address}",
-    on_message=on_message,
-    on_error=on_error,
-    on_close=on_close,
-    header=header,
-)
+address = "157.90.9.193:80"
+# address = "157.90.9.193:8080"
+ws_clients = []
 
-# ws.send('Hello world')
-ws.on_open = on_open
-ws.run_forever()
+
+def new_client():
+    ws = websocket.WebSocketApp(
+        f"ws://{address}",
+        # on_message=on_message,
+        on_error=on_error,
+        on_close=on_close,
+        header=header,
+    )
+    # ws.send('Hello world')
+    # ws.on_open = on_open
+    ws.run_forever()
+
+
+for i in range(1, 2):
+    print(f"Clinet : {i}")
+    Thread(target=new_client).start()
+    sleep(0.2)

@@ -63,9 +63,9 @@ class Device(ViewSet):
     def update(self, request, pk) -> Response:
         device = get_object_or_404(Device_Model, token=pk, user=request.user)
 
-        serializer = Serializer_Device(instance=device,
-                                       data=request.data,
-                                       context={"request": request})
+        serializer = Serializer_Device(
+            instance=device, data=request.data, context={"request": request}
+        )
 
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
@@ -90,23 +90,24 @@ class Device(ViewSet):
     def create(self, request) -> Union[Response, Http404]:
         data = request.data
 
-        serializer = Serializer_Device(data=request.data,
-                                       context={"request": request})
+        serializer = Serializer_Device(data=request.data, context={"request": request})
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk) -> Union[Response, ]:
+    def destroy(self, request, pk) -> Union[Response, None]:
 
         device = get_object_or_404(Device_Model, token=pk, user=request.user)
         device.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False,
-            methods=["GET"],
-            url_path=r"filter/(?P<type>\w+)",
-            url_name='filter_type')
+    @action(
+        detail=False,
+        methods=["GET"],
+        url_path=r"filter/(?P<type>\w+)",
+        url_name="filter_type",
+    )
     def filter(self, request, type) -> Union[Response, Http404]:
         user = request.user
         device = get_list_or_404(Device_Model, type=type, user=user)
@@ -117,7 +118,7 @@ class Device(ViewSet):
     #                         Data                         #
     ########################################################
 
-    @action(detail=True, methods=["GET"], url_name='data')
+    @action(detail=True, methods=["GET"], url_name="data")
     def data(self, request, pk) -> Union[Response, Http404]:
         user = request.user
         token = pk
@@ -131,9 +132,8 @@ class Device(ViewSet):
     #                       Command                        #
     ########################################################
 
-    @action(detail=True, methods=["GET"], url_name='command')
-    def command(self, request,
-                pk) -> Union[Response, Http404]:  # Retrieve Command
+    @action(detail=True, methods=["GET"], url_name="command")
+    def command(self, request, pk) -> Union[Response, Http404]:  # Retrieve Command
 
         data = request.data
         status = get_object_or_404(Command_Model, device=pk)
@@ -149,13 +149,12 @@ class Device(ViewSet):
             command_instace = Command_Model.objects.get(device=pk)
         except:
             pass
-        serializer = Serializer_Command(instance=command_instace,
-                                        data=data,
-                                        partial=True)
+        serializer = Serializer_Command(
+            instance=command_instace, data=data, partial=True
+        )
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
-            return Response(data=serializer.data,
-                            status=Status.HTTP_201_CREATED)
+            return Response(data=serializer.data, status=Status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     ########################################################
@@ -163,7 +162,7 @@ class Device(ViewSet):
     ########################################################
 
     # @decoretor_decrypt
-    @action(detail=True, url_name='button')
+    @action(detail=True, url_name="button")
     def button(self, request, pk) -> Union[Response, Http404]:
         buttons = get_list_or_404(Button_Model, device=pk)
         serializer = Serializer_Buttons(buttons, many=True)
@@ -184,7 +183,8 @@ class Device(ViewSet):
         url_path=r"button/(?P<id>\w+)",
         # url_path=r"button_retrieve/(?P<id>[^/.]+)",
         # methods=["GET"],
-        url_name='button_retrieve')
+        url_name="button_retrieve",
+    )
     def button_retrieve(self, request, pk, id) -> Union[Response, Http404]:
         data = request.data
         device = pk

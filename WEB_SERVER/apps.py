@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class WebServerAppConfig(AppConfig):
+class CoreAppConfig(AppConfig):
     name = "WEB_SERVER"
 
     def ready(self):
