@@ -52,12 +52,6 @@ class Device(ViewSet):
     ########################################################
     #                       Device                         #
     ########################################################
-    @extend_schema(
-        description="get all devices of user ",
-        request=HttpResponse,
-        responses=[Serializer_Device],
-        methods=["GET"],
-    )
     def list(self, request) -> Response:
         device = get_list_or_404(Device_Model, user=request.user)
         serializer = Serializer_Device(device, many=True)
