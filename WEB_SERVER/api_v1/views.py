@@ -2,8 +2,10 @@ from ast import walk
 from time import time
 
 from typing import Union
+from django import http
 
 from django.http import Http404
+from django.http.response import HttpResponse
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 
@@ -27,7 +29,9 @@ from .serializer import (
     Serializer_Device,
     Serializer_Buttons,
 )
+from drf_spectacular.utils import extend_schema
 
+# Debug Options : set status of raise Errors in APIs
 raise_exception_validitor = True
 
 
@@ -48,7 +52,12 @@ class Device(ViewSet):
     ########################################################
     #                       Device                         #
     ########################################################
-
+    @extend_schema(
+        description="get all devices of user ",
+        request=HttpResponse,
+        responses=[Serializer_Device],
+        methods=["GET"],
+    )
     def list(self, request) -> Response:
         device = get_list_or_404(Device_Model, user=request.user)
         serializer = Serializer_Device(device, many=True)
@@ -132,7 +141,7 @@ class Device(ViewSet):
     #                       Command                        #
     ########################################################
 
-    @action(detail=True, methods=["GET"], url_name="command")
+    @action(detail=True, methods=["GET"], url_name="commands")
     def command(self, request, pk) -> Union[Response, Http404]:  # Retrieve Command
 
         data = request.data
@@ -162,7 +171,7 @@ class Device(ViewSet):
     ########################################################
 
     # @decoretor_decrypt
-    @action(detail=True, url_name="button")
+    @action(detail=True, url_name="buttons")
     def button(self, request, pk) -> Union[Response, Http404]:
         buttons = get_list_or_404(Button_Model, device=pk)
         serializer = Serializer_Buttons(buttons, many=True)
@@ -180,10 +189,10 @@ class Device(ViewSet):
 
     @action(
         detail=True,
-        url_path=r"button/(?P<id>\w+)",
+        url_path=r"buttons/(?P<id>\w+)",
         # url_path=r"button_retrieve/(?P<id>[^/.]+)",
         # methods=["GET"],
-        url_name="button_retrieve",
+        url_name="buttons_retrieve",
     )
     def button_retrieve(self, request, pk, id) -> Union[Response, Http404]:
         data = request.data
