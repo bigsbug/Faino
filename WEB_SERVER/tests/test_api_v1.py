@@ -36,9 +36,9 @@ class ApiTestCase(APITestCase):
 
     def test_get_all_device_of_user(self):
 
-        url = reverse("WEBSERVER:Device-list")  # '/api/devices/'
+        url = reverse("WEBSERVER:Device-list")  # '/api/device/'
         # url = Device_API().reverse_action('list')
-        url = "/api/devices/"
+        url = "/api/device/"
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
         response = client.get(url)
