@@ -30,12 +30,8 @@ from .serializer import (
     Serializer_Device,
     Serializer_Buttons,
 )
-<<<<<<< HEAD
-from drf_spectacular.utils import extend_schema
-=======
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
->>>>>>> feature/swagger-openapi3
 
 # Debug Options : set status of raise Errors in APIs
 raise_exception_validitor = True
@@ -58,8 +54,6 @@ class Device(ViewSet):
     ########################################################
     #                       Device                         #
     ########################################################
-<<<<<<< HEAD
-=======
 
     @extend_schema(
         summary="Get All Devices of User",
@@ -71,7 +65,6 @@ class Device(ViewSet):
             400: None,
         },
     )
->>>>>>> feature/swagger-openapi3
     def list(self, request) -> Response:
         device = get_list_or_404(Device_Model, user=request.user)
         serializer = Serializer_Device(device, many=True)
@@ -256,9 +249,6 @@ class Device(ViewSet):
     #                       Command                        #
     ########################################################
 
-<<<<<<< HEAD
-    @action(detail=True, methods=["GET"], url_name="commands")
-=======
     @extend_schema(
         summary="Get the last command",
         responses={
@@ -275,7 +265,6 @@ class Device(ViewSet):
         ],
     )
     @action(detail=True, methods=["GET"], url_name="command")
->>>>>>> feature/swagger-openapi3
     def command(self, request, pk) -> Union[Response, Http404]:  # Retrieve Command
 
         data = request.data
@@ -320,10 +309,6 @@ class Device(ViewSet):
     #                       Button                         #
     ########################################################
 
-<<<<<<< HEAD
-    # @decoretor_decrypt
-    @action(detail=True, url_name="buttons")
-=======
     @extend_schema(
         operation_id="button_RC",
         summary="Get all buttons of the Device",
@@ -341,7 +326,6 @@ class Device(ViewSet):
         },
     )
     @action(detail=True, url_name="button")
->>>>>>> feature/swagger-openapi3
     def button(self, request, pk) -> Union[Response, Http404]:
         buttons = get_list_or_404(Button_Model, device=pk)
         serializer = Serializer_Buttons(buttons, many=True)
@@ -396,15 +380,8 @@ class Device(ViewSet):
     )
     @action(
         detail=True,
-<<<<<<< HEAD
-        url_path=r"buttons/(?P<id>\w+)",
-        # url_path=r"button_retrieve/(?P<id>[^/.]+)",
-        # methods=["GET"],
-        url_name="buttons_retrieve",
-=======
         url_path=r"button/(?P<id_button>\w+)",
         url_name="button_retrieve",
->>>>>>> feature/swagger-openapi3
     )
     def button_retrieve(self, request, pk, id_button) -> Union[Response, Http404]:
         data = request.data
