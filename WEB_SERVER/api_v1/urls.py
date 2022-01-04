@@ -4,5 +4,5 @@ from .views import Device
 
 Router = DefaultRouter()
 app_name = "api"
-Router.register("devices", Device, basename="Device")
+Router.register("device", Device, basename="Device")
 urlpatterns = Router.urls
