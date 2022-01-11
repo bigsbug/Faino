@@ -12,7 +12,7 @@ class Data_Register(admin.ModelAdmin):
 
 
 class Command_Register(admin.ModelAdmin):
-    list_display = ["device", "date", "complated", "data"]
+    list_display = ["device","type", "date", "status", "data"]
 
 
 class Button_Register(admin.ModelAdmin):
