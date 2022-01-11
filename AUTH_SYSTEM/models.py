@@ -31,10 +31,9 @@ class Temp_link(models.Model):
     def expire_time():
         return make_expire_time(seconds=10)
 
-    link = models.UUIDField(primary_key=True,
-                            default=uuid4,
-                            editable=False,
-                            unique=True)
+    link = models.UUIDField(
+        primary_key=True, default=uuid4, editable=False, unique=True
+    )
     expire = models.DateTimeField(default=expire_time)
     ip = models.GenericIPAddressField()
     file = models.FileField()
