@@ -18,11 +18,10 @@ from django.db.models.query import exceptions as Er
 
 
 @receiver(post_save, sender=Command)
-def Send_status_to_device(sender, instance, created, **kwargs):
-    if instance.complated == False:
+def Send_command_to_device(sender, instance, created, **kwargs):
+    if instance.status == False:
         channels_layer = get_channel_layer()
         name_group = str(instance.device.pk)
-        data = instance.data
-        command = {"type": "Command", "data": data}
+        command = {"type": "Command", "command": instance.pk}
         async_to_sync(channels_layer.group_send)(name_group, command)
         # print("Send singal to consumers")
