@@ -75,10 +75,10 @@ class Command(models.Model):
         # unique=True,
     )
     type = models.CharField(max_length=20,choices=choices_list)
-    data = models.JSONField()
+    command = models.JSONField()
     status = models.fields.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-    time_complated = models.DateTimeField(null=True)
+    time_complated = models.DateTimeField(null=True,blank=True)
     
     def __str__(self):
         return self.device.name
