@@ -26,7 +26,7 @@ def on_open(ws):
     print("OPEN new Websocket")
 
 
-data = '{"token" :"d06dd64b-f5c2-4f57-a270-975035037f5d", "version": "0.01"}'.encode(
+data = '{"token" :"624ae81e-9017-42b3-a842-d636361d4e0a", "version": "0.01"}'.encode(
     "ascii"
 )
 data = base64.b64encode(data)
@@ -36,7 +36,7 @@ header = {"extra-header": data}
 print(header)
 
 websocket.enableTrace(True)
-address = "157.90.9.193:80"
+address = "127.0.0.1:8000"
 # address = "157.90.9.193:8080"
 ws_clients = []
 

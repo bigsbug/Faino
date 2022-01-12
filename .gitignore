@@ -5,3 +5,4 @@ sources/*
 .env.devlopment
 .env.production
 *Core_db
+*DB-server
