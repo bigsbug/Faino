@@ -41,7 +41,7 @@ def get_client_ip_2(headers):
     return ip
 
 
-class ChatConsumer(AsyncJsonWebsocketConsumer):
+class Device_WB(AsyncJsonWebsocketConsumer):
     async def connect(self, *args, **kwargs):
 
         headers = self.scope["headers"]
@@ -64,12 +64,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             )
             print("accept")
             await self.Change_status_device(True)
-            exist_new_status = await self.Get_Command_Server()
+            new_command = await self.Get_Command_Server()
 
-            if exist_new_status:
+            if new_command:
                 print("******************RUN*******************")
-                await self.Change_Status_Command()
-                await self.send_json(exist_new_status)
+                for command in new_command:
+                    # print(command.command)
+                    await self.send_json(command.command)
+                    print('Command Sended To Device.')
+                    await self.Change_Status_Command(command)
+                    
 
             print("***************DONE****************")
 
@@ -94,7 +98,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         temp_link.save()
         domain = Site.objects.all()[0].domain
         app_url = reverse("WEBSERVER:UPDATE_LINK", args=(temp_link.link,))
-        full_url = fr"http://{domain}{app_url}"
+        full_url = fr"http:/1/{domain}{app_url}"
         return full_url
 
     async def disconnect(self, code):
@@ -124,19 +128,27 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         self.scope["device"].save()
 
     @database_sync_to_async
-    def Change_Status_Command(self):
-        self.scope["device"].Command_Device.complated = True
-        self.scope["device"].Command_Device.save()
-        print("Status Changed")
+    def Change_Status_Command(self,command):
+            command.status =True
+            command.save()
+            print("Status Changed")
 
     @database_sync_to_async
-    def Get_Command_Server(self):  # get the last command from server to device
+    def Get_Command_Server(self,id=None):  # get all commands or one for Device 
         device = self.scope["device"]
         try:
-            if device.Command_Device.complated != True:
-                return device.Command_Device.data
+            if id ==None:
+                
+                data = device.Command_Device.filter(status=False).order_by('id')
+                
+                if data:
+                    return data
+                else:
+                    return False
+                
             else:
-                return False
+                return device.Command_Device.get(pk=id)
+            
         except:  # dont exist any command from server its rise an error
             return False
 
@@ -145,18 +157,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         self.scope["device"].Data_Device.create(data=status)
 
     async def Command(self, event):
-        data = event["data"]
-        await self.send_json(data)
-        await self.Change_Status_Command()
-        await self.Save_status(data)
-        print("Running", event["data"])
+                  
+        command = await self.Get_Command_Server(id = event["command"])
+
+        await self.send_json(command.command)
+        await self.Change_Status_Command(command)
+        await self.Save_status(command.command)
+        
+        print("Running",command.command)
 
     async def receive_json(self, content):
-        # Ngative = lambda data : 'OFF' if data == 'ON' else 'ON'
-        # await self.send('{"statusled":["OFF","OFF","OFF","OFF"]}')
         print(f">>Before>>> {content }")
-        # content['statusled'] = list(map(Ngative,content['statusled']))
-        # data = content
-
-        # await self.send_json(content)
-        # print(f'>>After>>> {content }')

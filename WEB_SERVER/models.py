@@ -66,23 +66,22 @@ class Data(models.Model):
 
 
 class Command(models.Model):
-    device = models.OneToOneField(
+    choices_list = [("ًCS","Command Server"),("CU","Command User"),]
+    device = models.ForeignKey(
         Device,
         on_delete=models.CASCADE,
         related_name="Command_Device",
-        primary_key=True,
-        unique=True,
+        # primary_key=True,
+        # unique=True,
     )
-    data = models.JSONField()
-    complated = models.fields.BooleanField(default=False)
+    type = models.CharField(max_length=20,choices=choices_list)
+    command = models.JSONField()
+    status = models.fields.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-
+    time_complated = models.DateTimeField(null=True,blank=True)
+    
     def __str__(self):
         return self.device.name
-
-    # def save(self, force_insert: bool, force_update: bool, using: Optional[str], update_fields: Optional[Iterable[str]]) -> None:
-    #     return super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-
 
 class Button(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
