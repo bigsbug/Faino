@@ -56,5 +56,5 @@ class Serializer_Type(serializers.ModelSerializer):
 class Serializer_Command(serializers.ModelSerializer):
     class Meta:
         model = Command
-        fields = ["data", "status", "date", "device"]
+        fields = fields = "__all__"
         # extra_kwargs = {"device": {"validators": []}}

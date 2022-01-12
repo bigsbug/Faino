@@ -26,7 +26,7 @@ def on_open(ws):
     print("OPEN new Websocket")
 
 
-data = '{"token" :"624ae81e-9017-42b3-a842-d636361d4e0a", "version": "0.01"}'.encode(
+data = '{"token" :"0961bea7-619e-4c48-8d56-0c4a03b9481d", "version": "0.01"}'.encode(
     "ascii"
 )
 data = base64.b64encode(data)
