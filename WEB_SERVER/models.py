@@ -78,8 +78,13 @@ class Command(models.Model):
     command = models.JSONField()
     status = models.fields.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-    time_complated = models.DateTimeField(null=True,blank=True)
+    time_completed = models.DateTimeField(null=True,blank=True)
     
+    def save(self,*args,**kwargs):
+        if self.status == True:
+            self.time_completed = timezone.now()
+        super().save(*args,*kwargs)
+        
     def __str__(self):
         return self.device.name
 
