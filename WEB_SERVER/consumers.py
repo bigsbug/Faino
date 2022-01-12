@@ -139,7 +139,7 @@ class Device_WB(AsyncJsonWebsocketConsumer):
         try:
             if id ==None:
                 
-                data = device.Command_Device.filter(status=False)
+                data = device.Command_Device.filter(status=False).order_by('id')
                 
                 if data:
                     return data
