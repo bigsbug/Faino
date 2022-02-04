@@ -1,4 +1,6 @@
-from ast import Str, walk
+from AUTH_SYSTEM.models import Permissions_Group
+from ast import Return, Str, walk
+import imp
 from time import time
 
 from typing import Union
@@ -8,7 +10,7 @@ from django.http import Http404
 from django.http.response import HttpResponse
 
 from django.shortcuts import get_object_or_404, get_list_or_404
-
+from AUTH_SYSTEM.models import New_User as USER
 from rest_framework import permissions, status
 from rest_framework import response
 from rest_framework.decorators import action
@@ -22,6 +24,7 @@ from WEB_SERVER.models import (
     Command as Command_Model,
     Data as Data_Model,
     Button as Button_Model,
+    UserDevice,
 )
 
 from .serializer import (
@@ -29,10 +32,14 @@ from .serializer import (
     Serializer_Command,
     Serializer_Device,
     Serializer_Buttons,
+    Serializer_Profile,
+    Serializer_UserDevice,
+    Serializer_UserDevice_INPUT_REQUEST
 )
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
+from AUTH_SYSTEM.permissions import Auto_Detect_UserDevice
 # Debug Options : set status of raise Errors in APIs
 raise_exception_validitor = True
 
@@ -48,14 +55,29 @@ def decoretor_decrypt(func):
     return inner
 
 
-class Device(ViewSet):
+class Device_API(ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     ########################################################
     #                       Device                         #
     ########################################################
+    def get_permissions(self):
 
-    @extend_schema(
+        global_access = [
+            "list",
+            "create",
+            "filter",
+        ]
+
+        if self.action in global_access:
+            self.permission_classes = [permissions.IsAuthenticated, ]
+        else:
+            self.permission_classes = [
+                permissions.IsAuthenticated, Auto_Detect_UserDevice, ]
+
+        return [permission() for permission in self.permission_classes]
+
+    @ extend_schema(
         summary="Get All Devices of User",
         request={
             200: Serializer_Device,
@@ -66,12 +88,13 @@ class Device(ViewSet):
         },
     )
     def list(self, request) -> Response:
-        device = get_list_or_404(Device_Model, user=request.user)
-        serializer = Serializer_Device(device, many=True)
+        device = request.user.devices.all()
+        serializer = Serializer_Device(
+            device, many=True, context={'request': request})
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
-    @extend_schema(
-        summary="Retrive a special device with the UUID token",
+    @ extend_schema(
+        summary="Retrieve a special device with the UUID token ",
         responses={
             200: Serializer_Device,
             404: None,
@@ -79,7 +102,7 @@ class Device(ViewSet):
         parameters=[
             OpenApiParameter(
                 name="id",
-                description="Token of Device",
+                description="Token of user",
                 allow_blank=False,
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
@@ -88,11 +111,11 @@ class Device(ViewSet):
     )
     def retrieve(self, request, pk) -> Union[Response, Http404]:
         user = request.user
-        device = get_object_or_404(Device_Model, token=pk, user=user)
+        device = get_object_or_404(user.UserDevice, token=pk).device
         serializer = Serializer_Device(device)
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Full Update a Device",
         request=Serializer_Device,
         responses={
@@ -102,7 +125,7 @@ class Device(ViewSet):
         parameters=[
             OpenApiParameter(
                 name="id",
-                description="Token of Device",
+                description="Token of user",
                 allow_blank=False,
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
@@ -110,7 +133,8 @@ class Device(ViewSet):
         ],
     )
     def update(self, request, pk) -> Response:
-        device = get_object_or_404(Device_Model, token=pk, user=request.user)
+        user = request.user
+        device = get_object_or_404(user.UserDevice, token=pk).device
 
         serializer = Serializer_Device(
             instance=device, data=request.data, context={"request": request}
@@ -121,7 +145,7 @@ class Device(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Partial Update a Device",
         request=Serializer_Device,
         responses={
@@ -132,7 +156,7 @@ class Device(ViewSet):
         parameters=[
             OpenApiParameter(
                 name="id",
-                description="Token of Device",
+                description="Token of user",
                 allow_blank=False,
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
@@ -140,7 +164,8 @@ class Device(ViewSet):
         ],
     )
     def partial_update(self, request, pk) -> Response:
-        device = get_object_or_404(Device_Model, token=pk, user=request.user)
+        user = request.user
+        device = get_object_or_404(user.UserDevice, token=pk).device
 
         serializer = Serializer_Device(
             instance=device,
@@ -154,7 +179,7 @@ class Device(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Create a new device",
         request=Serializer_Device,
         responses={201: Serializer_Device, 400: dict},
@@ -162,13 +187,14 @@ class Device(ViewSet):
     def create(self, request) -> Union[Response, Http404]:
         data = request.data
 
-        serializer = Serializer_Device(data=request.data, context={"request": request})
+        serializer = Serializer_Device(
+            data=request.data, context={"request": request})
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Delete Device with Token",
         responses={
             200: Serializer_Device,
@@ -177,19 +203,19 @@ class Device(ViewSet):
         parameters=[
             OpenApiParameter(
                 name="id",
-                description="Token of Device",
+                description="Token of user",
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
             )
         ],
     )
     def destroy(self, request, pk) -> Union[Response, None]:
-
-        device = get_object_or_404(Device_Model, token=pk, user=request.user)
+        user = request.user
+        device = get_object_or_404(user.UserDevice, token=pk).device
         device.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Filter Device With Tyep  ",
         responses={
             200: Serializer_Device,
@@ -204,7 +230,7 @@ class Device(ViewSet):
             )
         ],
     )
-    @action(
+    @ action(
         detail=False,
         methods=["GET"],
         url_path=r"filter/(?P<type>\w+)",
@@ -212,7 +238,7 @@ class Device(ViewSet):
     )
     def filter(self, request, type) -> Union[Response, Http404]:
         user = request.user
-        device = get_list_or_404(Device_Model, type=type, user=user)
+        device = get_list_or_404(user.devices, type=type)
         serializer = Serializer_Device(device, many=True)
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
@@ -220,7 +246,7 @@ class Device(ViewSet):
     #                         Data                         #
     ########################################################
 
-    @extend_schema(
+    @ extend_schema(
         summary="get logs of the device",
         responses={
             200: Serializer_Device_Data,
@@ -229,17 +255,16 @@ class Device(ViewSet):
         parameters=[
             OpenApiParameter(
                 name="id",
-                description="Token of Device",
+                description="Token of user",
                 type=OpenApiTypes.UUID,
                 location=OpenApiParameter.PATH,
             )
         ],
     )
-    @action(detail=True, methods=["GET"], url_name="data")
+    @ action(detail=True, methods=["GET"], url_name="data")
     def data(self, request, pk) -> Union[Response, Http404]:
         user = request.user
-        token = pk
-        device = get_object_or_404(Device_Model, user=user, token=token)
+        device = get_object_or_404(user.UserDevice, token=pk).device
         data_instance = get_list_or_404(Data_Model, device=device)
         serializer = Serializer_Device_Data(data_instance, many=True)
 
@@ -249,8 +274,8 @@ class Device(ViewSet):
     #                       Command                        #
     ########################################################
 
-    @extend_schema(
-        summary="Get the last command",
+    @ extend_schema(
+        summary="Get all commands",
         responses={
             200: Serializer_Command,
             404: OpenApiTypes.OBJECT,
@@ -264,15 +289,17 @@ class Device(ViewSet):
             )
         ],
     )
-    @action(detail=True, methods=["GET"], url_name="command")
-    def command(self, request, pk) -> Union[Response, Http404]:  # Retrieve Command
+    @ action(detail=True, methods=["GET"], url_name="commands")
+    # Retrieve Command
+    def command(self, request, pk) -> Union[Response, Http404]:
 
         data = request.data
-        status = get_object_or_404(Command_Model, device=pk)
-        serializer = Serializer_Command(status)
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
+        status = get_list_or_404(Command_Model, device=device)
+        serializer = Serializer_Command(status, many=True)
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Send new command to the device",
         request=Serializer_Command,
         responses={
@@ -288,13 +315,14 @@ class Device(ViewSet):
             )
         ],
     )
-    @command.mapping.post
-    def command_create(self, request, pk) -> Response:
+    @ command.mapping.post
+    def create_command(self, request, pk) -> Response:
         data = request.data.copy()
         data["device"] = pk
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
         command_instace = None
         try:
-            command_instace = Command_Model.objects.get(device=pk)
+            command_instace = Command_Model.objects.get(device=device)
         except:
             pass
         serializer = Serializer_Command(
@@ -309,7 +337,7 @@ class Device(ViewSet):
     #                       Button                         #
     ########################################################
 
-    @extend_schema(
+    @ extend_schema(
         operation_id="button_RC",
         summary="Get all buttons of the Device",
         parameters=[
@@ -325,13 +353,14 @@ class Device(ViewSet):
             404: OpenApiTypes.OBJECT,
         },
     )
-    @action(detail=True, url_name="button")
+    @ action(detail=True, url_name="buttons")
     def button(self, request, pk) -> Union[Response, Http404]:
-        buttons = get_list_or_404(Button_Model, device=pk)
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
+        buttons = get_list_or_404(Button_Model, device=device)
         serializer = Serializer_Buttons(buttons, many=True)
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Create new button",
         request=Serializer_Buttons,
         parameters=[
@@ -347,8 +376,8 @@ class Device(ViewSet):
             404: OpenApiTypes.OBJECT,
         },
     )
-    @button.mapping.post
-    def button_create(self, request, pk) -> Response:
+    @ button.mapping.post
+    def create_button(self, request, pk) -> Response:
         data = request.data.copy()
         data["device"] = pk
         serializer = Serializer_Buttons(data=data)
@@ -357,7 +386,7 @@ class Device(ViewSet):
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Retrieve a button",
         parameters=[
             OpenApiParameter(
@@ -378,19 +407,19 @@ class Device(ViewSet):
             404: OpenApiTypes.OBJECT,
         },
     )
-    @action(
+    @ action(
         detail=True,
-        url_path=r"button/(?P<id_button>\w+)",
-        url_name="button_retrieve",
+        url_path=r"buttons/(?P<id_button>\w+)",
+        url_name="retrieve_button",
     )
-    def button_retrieve(self, request, pk, id_button) -> Union[Response, Http404]:
+    def retrieve_button(self, request, pk, id_button) -> Union[Response, Http404]:
         data = request.data
-        device = pk
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
         button = get_object_or_404(Button_Model, device=device, pk=id_button)
         serializer = Serializer_Buttons(button)
         return Response(serializer.data, status=Status.HTTP_200_OK)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Delete the button",
         parameters=[
             OpenApiParameter(
@@ -411,14 +440,14 @@ class Device(ViewSet):
             404: OpenApiTypes.OBJECT,
         },
     )
-    @button_retrieve.mapping.delete
-    def button_destroy(self, request, pk, id_button):
-        device = pk
+    @ retrieve_button.mapping.delete
+    def destroy_button(self, request, pk, id_button):
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
         button = get_object_or_404(Button_Model, device=device, pk=id_button)
         button.delete()
         return Response(status=Status.HTTP_204_NO_CONTENT)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Full update the button",
         parameters=[
             OpenApiParameter(
@@ -440,18 +469,19 @@ class Device(ViewSet):
             400: OpenApiTypes.OBJECT,
         },
     )
-    @button_retrieve.mapping.put
+    @ retrieve_button.mapping.put
     def update_button(self, request, id_button, pk):
         data = request.data.copy()
-        data["device"] = pk
-        button = get_object_or_404(Button_Model, device=pk, pk=id_button)
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
+        data["device"] = device.pk
+        button = get_object_or_404(Button_Model, device=device, pk=id_button)
         serializer = Serializer_Buttons(button, data)
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
             return Response(serializer.data, status=Status.HTTP_200_OK)
         return Response(status=Status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
+    @ extend_schema(
         summary="Partial update the button",
         parameters=[
             OpenApiParameter(
@@ -473,10 +503,205 @@ class Device(ViewSet):
             400: OpenApiTypes.OBJECT,
         },
     )
-    @button_retrieve.mapping.patch
-    def partial_update_button(self, request, id_button, pk):
-        button = get_object_or_404(Button_Model, device=pk, pk=id_button)
+    @ retrieve_button.mapping.patch
+    def update_partial_button(self, request, id_button, pk):
+        device = get_object_or_404(request.user.UserDevice, token=pk).device
+        button = get_object_or_404(Button_Model, device=device, pk=id_button)
         serializer = Serializer_Buttons(button, request.data, partial=True)
+        if serializer.is_valid(raise_exception_validitor):
+            serializer.save()
+            return Response(serializer.data, status=Status.HTTP_200_OK)
+        return Response(status=Status.HTTP_400_BAD_REQUEST)
+
+    ########################################################
+    #                       Users                          #
+    ########################################################
+
+    @ extend_schema(
+        summary="Get all users of device",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="Token Device",
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        responses={
+            200: Serializer_UserDevice,
+            404: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+        },
+    )
+    @ action(
+        detail=True,
+        url_name="users",
+    )
+    def users(self, request, pk):
+        user = request.user
+        device = get_object_or_404(
+            UserDevice, token=pk, user=request.user).device
+        all_users = get_list_or_404(UserDevice, device=device)
+        serializer = Serializer_Profile(all_users, many=True)
+        return Response(serializer.data, status=Status.HTTP_200_OK)
+
+    @ extend_schema(
+        summary="Create a user",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="user token",
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        responses={
+            200: Serializer_Profile,
+            404: OpenApiTypes.OBJECT,
+        },
+        request=Serializer_UserDevice_INPUT_REQUEST,
+    )
+    @ users.mapping.post
+    def create_user(self, request, pk):
+        data = request.data.copy()
+        device = get_object_or_404(
+            UserDevice, token=pk, user=request.user).device
+        email = data.get('user', None)
+        user = get_object_or_404(USER, email=email)
+        data['device'] = device.token
+        data['user'] = user.pk
+
+        serializer = Serializer_UserDevice(data=data)
+        if serializer.is_valid(True):
+            try:
+                serializer.save()
+                return Response(serializer.data, status.HTTP_200_OK)
+            except:
+                return Response(data={"error": 'this user added before to this device'}, status=Status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(status=Status.HTTP_406_NOT_ACCEPTABLE)
+
+    @ extend_schema(
+        summary="Retrieve a user",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="user token",
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                "user_token",
+                OpenApiTypes.UUID,
+                description="target token",
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        responses={
+            200: Serializer_Profile,
+            404: OpenApiTypes.OBJECT,
+        },
+    )
+    @ action(
+        detail=True,
+        url_path=r"users/(?P<user_token>\w+)",
+        url_name="retrieve user",
+    )
+    def retrieve_user(self, request, pk, user_token):
+        user = user_token
+        user_profile = get_object_or_404(
+            UserDevice, token=user, user=request.user)
+        serializer = Serializer_Profile(user_profile,)
+        return Response(serializer.data, status=Status.HTTP_200_OK)
+
+    @ extend_schema(
+        summary="Delete a user",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="user token",
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                "user_token",
+                OpenApiTypes.UUID,
+                description="target token",
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        responses={
+            200: Serializer_Profile,
+            404: OpenApiTypes.OBJECT,
+        },
+    )
+    @ retrieve_user.mapping.delete
+    def destory_user(self, request, pk, user_token):
+        user = user_token
+        user_profile = get_object_or_404(
+            UserDevice, token=pk, user=request.user)
+        user_profile.delete()
+        return Response(status=Status.HTTP_200_OK)
+
+    @ extend_schema(
+        summary="update a user",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="user token",
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                "user_token",
+                OpenApiTypes.UUID,
+                description="target token",
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        responses={
+            200: Serializer_Profile,
+            404: OpenApiTypes.OBJECT,
+        },
+    )
+    @ retrieve_user.mapping.post
+    def update_user(self, request, pk, user_token):
+        user = user_token
+        user_profile = get_object_or_404(
+            UserDevice, token=pk, user=request.user)
+        serializer = Serializer_Profile(user_profile, request.data)
+        if serializer.is_valid(raise_exception_validitor):
+            serializer.save()
+            return Response(serializer.data, status=Status.HTTP_200_OK)
+        return Response(status=Status.HTTP_400_BAD_REQUEST)
+
+    @ extend_schema(
+        summary="update partial a user",
+        parameters=[
+            OpenApiParameter(
+                "id",
+                OpenApiTypes.UUID,
+                description="user token",
+                location=OpenApiParameter.PATH,
+            ),
+            OpenApiParameter(
+                "user_token",
+                OpenApiTypes.UUID,
+                description="target token",
+                location=OpenApiParameter.PATH,
+            ),
+        ],
+        responses={
+            200: Serializer_Profile,
+            404: OpenApiTypes.OBJECT,
+        },
+    )
+    @ retrieve_user.mapping.patch
+    def update_partial_user(self, request, pk, user_token):
+        user = user_token
+        user_profile = get_object_or_404(
+            UserDevice, token=pk, user=request.user)
+        serializer = Serializer_Profile(
+            user_profile, request.data, partial=True)
         if serializer.is_valid(raise_exception_validitor):
             serializer.save()
             return Response(serializer.data, status=Status.HTTP_200_OK)

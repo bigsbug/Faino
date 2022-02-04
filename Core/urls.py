@@ -23,9 +23,11 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
+    path('__debug__/', include('debug_toolbar.urls')),
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_pair_refresh"),
+    path("api/token/refresh/", TokenRefreshView.as_view(),
+         name="token_pair_refresh"),
     # path("api/token/verify/", TokenVerifyView.as_view(), name="token_pair_verify"),
     path("", include("WEB_SERVER.urls")),
     # path("api/", include("WEB_SERVER.api_v1.urls")),

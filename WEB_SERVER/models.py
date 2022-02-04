@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 # from django.conf.global_settings import AUTH_USER_MODEL
 from uuid import uuid4
 
+from AUTH_SYSTEM.models import Permissions_Group
+
 from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
@@ -15,7 +17,8 @@ def validator_name(name: str):
         '-', '_', '(', ')', '!', '@', '#', '$', '%', '^', '&', '*', '+', '`',
         ':', ';', '/', '|', '\\', '<', '>', '?', '~', '[', ']', '{', '}', ' '
     ]
-    check_contin_char = lambda char, val: True in [
+
+    def check_contin_char(char, val): return True in [
         True for item in char if item in val
     ]
     if check_contin_char(unvlid_chars, name):
@@ -45,13 +48,36 @@ class Device(models.Model):
     password = models.CharField(max_length=62, blank=True)
     mac = models.CharField(max_length=17, blank=True)
     description = models.fields.TextField(max_length=600, blank=True)
-    user = models.ForeignKey(User,
-                             related_name="Device_user",
-                             on_delete=models.CASCADE)
+    users = models.ManyToManyField(User, 'devices', through="UserDevice")
+
     status = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
+
+class UserDevice(models.Model):
+    name = models.CharField(max_length=24)
+    user = models.ForeignKey(
+        User, on_delete=models.DO_NOTHING, related_name='UserDevice')
+    device = models.ForeignKey(
+        Device, models.CASCADE, related_name='UserDevice')
+    type = models.ForeignKey(Permissions_Group, models.SET_NULL, null=True)
+
+    token = models.UUIDField(default=uuid4,
+                             editable=False,
+                             unique=True)
+    join_time = models.DateTimeField(auto_now_add=True)
+    last_activate = models.DateTimeField(null=True, blank=True,)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'device'], name='unique_field_userdevice')
+        ]
+
+    def __str__(self):
+        return f"{self.user}*{self.device}"
 
 
 class Data(models.Model):
@@ -66,7 +92,7 @@ class Data(models.Model):
 
 
 class Command(models.Model):
-    choices_list = [("ًCS","Command Server"),("CU","Command User"),]
+    choices_list = [("ًCS", "Command Server"), ("CU", "Command User"), ]
     device = models.ForeignKey(
         Device,
         on_delete=models.CASCADE,
@@ -74,19 +100,20 @@ class Command(models.Model):
         # primary_key=True,
         # unique=True,
     )
-    type = models.CharField(max_length=20,choices=choices_list)
+    type = models.CharField(max_length=20, choices=choices_list)
     command = models.JSONField()
     status = models.fields.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-    time_completed = models.DateTimeField(null=True,blank=True)
-    
-    def save(self,*args,**kwargs):
+    time_completed = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
         if self.status == True:
             self.time_completed = timezone.now()
-        super().save(*args,*kwargs)
-        
+        super().save(*args, *kwargs)
+
     def __str__(self):
         return self.device.name
+
 
 class Button(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)

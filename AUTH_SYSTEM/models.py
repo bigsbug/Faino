@@ -1,3 +1,4 @@
+from asyncio import constants
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import timedelta
@@ -70,3 +71,27 @@ class Confirm_User(models.Model):
     def save(self, *args, **kwargs):
         print(args, kwargs)
         super(Confirm_User, self).save(*args, **kwargs)
+
+
+class Permissions(models.Model):
+    name = models.CharField(max_length=100)
+    app_name = models.CharField(max_length=100)
+    class_name = models.CharField(max_length=100)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'app_name', 'class_name'], name='unique_id')
+        ]
+
+    def __str__(self):
+        return f"{self.app_name} | {self.class_name} | {self.name}"
+
+
+class Permissions_Group(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+    permissions = models.ManyToManyField(
+        Permissions, "Permissions_of_group",)
+
+    def __str__(self):
+        return self.name
