@@ -4,6 +4,7 @@ from typing import Union
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.http import Http404
+from django.urls import reverse
 from django.views.generic.base import View
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -26,6 +27,11 @@ from .models import New_User, Confirm_User
 
 from rest_framework import permissions
 from django.template.loader import render_to_string
+
+from rest_framework.urls import urlpatterns
+from rest_framework.urlpatterns import URLResolver
+from rest_framework.reverse import django_reverse, reverse_lazy
+from rest_framework.routers import reverse as reverse_routers
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -155,7 +161,8 @@ class Forget_Password(APIView):
             confirm = confirm.save()
 
         template = "forget_password.html"
-        context = {"active_code": confirm.code, "domain": reqeust.META["HTTP_HOST"]}
+        context = {"active_code": confirm.code,
+                   "domain": reqeust.META["HTTP_HOST"]}
         html_template = render_to_string(template, context)
 
         SendEmail(
@@ -269,6 +276,9 @@ class User_API(APIView):
         return self.put(request, partial=True)
 
 
+def get_all_urls(reqeust):
+    print(django_reverse(current_app='api'))
+    return Response()
 # class User(ViewSet):
 #     def hash_password(self, password: str) -> str:
 #         hashed_password: str = make_password(password)

@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-import os, glob
+import os
+import glob
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     # Apss
+    "debug_toolbar",
     "rest_framework",
     "drf_spectacular",
     "drf_spectacular_sidecar",
@@ -60,6 +62,7 @@ INSTALLED_APPS = [
 SITE_ID = 2
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -83,7 +86,11 @@ CHANNEL_LAYERS = {
         },
     },
 }
+INTERNAL_IPS = [
 
+    "127.0.0.1",
+
+]
 ROOT_URLCONF = "Core.urls"
 
 TEMPLATES = [
@@ -198,7 +205,7 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=260),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     # 'ROTATE_REFRESH_TOKENS': True,
     # 'BLACKLIST_AFTER_ROTATION': False,

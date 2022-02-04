@@ -1,5 +1,7 @@
+import imp
 from django.contrib import admin
-from AUTH_SYSTEM.models import New_User, Temp_link, Confirm_User
+from AUTH_SYSTEM.models import New_User, Temp_link, Confirm_User, Permissions, Permissions_Group
+from AUTH_SYSTEM.froms import Permissions_Grup_FORM
 
 
 class USER_ADMIN(admin.ModelAdmin):
@@ -29,6 +31,12 @@ class CONFIRM_USER_ADMIN(admin.ModelAdmin):
     ]
 
 
+class Permissions_Group_REGISTER(admin.ModelAdmin):
+    list_display = ['name']
+    form = Permissions_Grup_FORM
+
+
 admin.site.register(New_User, USER_ADMIN)
 admin.site.register(Temp_link, TEMP_LINK_ADMIN)
 admin.site.register(Confirm_User, CONFIRM_USER_ADMIN)
+admin.site.register(Permissions_Group, Permissions_Group_REGISTER)
