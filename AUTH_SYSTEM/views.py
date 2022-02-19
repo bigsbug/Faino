@@ -23,7 +23,7 @@ from AUTH_SYSTEM.serializer import (
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 
-from .models import New_User, Confirm_User
+from .models import New_User, Confirm_User, Permissions_Group
 
 from rest_framework import permissions
 from django.template.loader import render_to_string
@@ -32,6 +32,8 @@ from rest_framework.urls import urlpatterns
 from rest_framework.urlpatterns import URLResolver
 from rest_framework.reverse import django_reverse, reverse_lazy
 from rest_framework.routers import reverse as reverse_routers
+
+from rest_framework import permissions
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -49,7 +51,7 @@ class Confrim_Email(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
-        summary="Send activation code to email",
+        summary="Sended activation code to email",
         parameters=[
             OpenApiParameter(
                 name="email",
@@ -97,7 +99,7 @@ class Confrim_Email(APIView):
             html_template,
         )
 
-        return HttpResponse("check you email")
+        return HttpResponse("check your email")
 
     @extend_schema(
         summary="Confirm activation code ",
@@ -119,7 +121,7 @@ class Confrim_Email(APIView):
         user.save()
         confirm_user.delete()
 
-        return Response(f"Your Account Now Activated")
+        return Response(f"Your account is now activated")
 
 
 class Forget_Password(APIView):
@@ -210,7 +212,14 @@ class Forget_Password(APIView):
 
 class User_API(APIView):
 
-    permission_classes = []
+    def get_permissions(self):
+        method = self.request.method.lower()
+        if method == 'post':
+            permission_classes = [permissions.AllowAny, ]
+        else:
+            permission_classes = [permissions.IsAuthenticated, ]
+
+        return [permission() for permission in permission_classes]
 
     def hash_password(self, password: str) -> str:
         hashed_password: str = make_password(password)
@@ -220,7 +229,7 @@ class User_API(APIView):
         summary="Sing in new user",
         request=Serializer_User,
         responses={
-            201: OpenApiTypes.OBJECT,
+            201: Serializer_User,
             400: OpenApiTypes.OBJECT,
         },
     )

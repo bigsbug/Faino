@@ -40,6 +40,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
 from AUTH_SYSTEM.permissions import Auto_Detect_UserDevice
+
 # Debug Options : set status of raise Errors in APIs
 raise_exception_validitor = True
 
@@ -190,7 +191,11 @@ class Device_API(ViewSet):
         serializer = Serializer_Device(
             data=request.data, context={"request": request})
         if serializer.is_valid(raise_exception_validitor):
-            serializer.save()
+            device = serializer.save()
+
+            UserDevice(
+                name='OWNER', user=request.user, device=device, type=Permissions_Group.objects.get(name='owner')).save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,6 +1,6 @@
 from pkgutil import iter_modules
 from django.apps import AppConfig
-from django.db import OperationalError
+from django.db import IntegrityError, OperationalError
 
 
 def Create_Permissinos():
@@ -30,8 +30,18 @@ class CoreAppConfig(AppConfig):
     name = "WEB_SERVER"
 
     def ready(self):
+        from AUTH_SYSTEM.models import Permissions, Permissions_Group
         from WEB_SERVER import signals
         try:
             Create_Permissinos()
         except OperationalError as Error:
             print(f"Error : {Error}")
+
+        try:  # make default permission group for owner users
+            Owner_group = Permissions_Group(name='owner')
+            Owner_group.save()
+            permissions = Permissions.objects.all()
+            Owner_group.permissions.set(permissions)
+            DEFAULT_TYPE = Owner_group.save()
+        except IntegrityError:
+            pass
