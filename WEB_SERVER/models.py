@@ -92,7 +92,7 @@ class Data(models.Model):
 
 
 class Command(models.Model):
-    choices_list = [("ًCS", "Command Server"), ("CU", "Command User"), ]
+    choices_list = [("CS", "Command Server"), ("CU", "Command User"), ]
     device = models.ForeignKey(
         Device,
         on_delete=models.CASCADE,
