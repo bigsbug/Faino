@@ -19,8 +19,8 @@ django_asgi_app = get_asgi_application()
 
 
 from channels.auth import AuthMiddlewareStack
-from WEB_SERVER.authMiddlware import MiddleWareStack_authToken
-from WEB_SERVER.router import websocket_urlpatterns
+from faino.WebServer.authMiddlware import MiddleWareStack_authToken
+from faino.WebServer.router import websocket_urlpatterns
 
 application = ProtocolTypeRouter(
     {
