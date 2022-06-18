@@ -1,15 +1,8 @@
-from django import views
-from django.http import HttpResponse, Http404, JsonResponse
-
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status as Status
-
 from faino.AuthSystem.models import Temp_link
-
 from faino.WebServer.utils import get_client_ip
-
-from django.core.mail import send_mail, EmailMessage
 
 
 def Update_device(request, link):
