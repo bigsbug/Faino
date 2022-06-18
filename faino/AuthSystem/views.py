@@ -1,39 +1,29 @@
-from os import name
 from typing import Union
 
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404, render
 from django.http import Http404
-from django.urls import reverse
-from django.views.generic.base import View
+from django.shortcuts import get_object_or_404
+from django.core.mail import EmailMultiAlternatives
+from django.contrib.auth.hashers import make_password
+from django.template.loader import render_to_string
+
+from rest_framework import status
+from rest_framework import permissions
+from rest_framework import permissions
+from rest_framework.decorators import APIView
+from rest_framework.response import Response
+from rest_framework.reverse import django_reverse
+
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework import permissions, serializers
-from rest_framework.viewsets import ViewSet, GenericViewSet
-from rest_framework.decorators import APIView, action
-from rest_framework.response import Response
-from rest_framework import status
-from django.views.decorators.csrf import csrf_exempt
+
 from faino.AuthSystem.serializer import (
     Serializer_Confirm_Forget,
     Serializer_User,
     Serializer_Confirm_User,
     Serializer_Confirm,
 )
-from django.contrib.auth.hashers import check_password, make_password
-from django.core.mail import EmailMessage, EmailMultiAlternatives
-
-from .models import New_User, Confirm_User, Permissions_Group
-
-from rest_framework import permissions
-from django.template.loader import render_to_string
-
-from rest_framework.urls import urlpatterns
-from rest_framework.urlpatterns import URLResolver
-from rest_framework.reverse import django_reverse, reverse_lazy
-from rest_framework.routers import reverse as reverse_routers
-
-from rest_framework import permissions
+from faino.AuthSystem.models import New_User, Confirm_User
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
