@@ -27,12 +27,3 @@ def Update_device(request, link):
     response["Content-Disposition"] = "attachment; filename=%s" % filename
 
     return response
-
-
-def index(request) -> HttpResponse:
-    ip = get_client_ip(request)
-    # data = ""
-    # # for key, value in request.META.items():
-    # #     data += f"{key} : {value} </br>"
-    # return JsonResponse(request.META)
-    return HttpResponse(ip)
