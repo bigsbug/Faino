@@ -54,7 +54,7 @@ class Confirm_User(models.Model):
         chars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
         return get_random_string(8, chars)
 
-    user = models.ForeignKey(New_User, on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField(New_User, on_delete=models.CASCADE)
     code = models.CharField(max_length=8, default=random_code, unique=True)
     token = models.UUIDField(default=uuid4, unique=True)
     expire = models.DateTimeField(default=expire_time)
@@ -81,7 +81,8 @@ class Permissions(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'app_name', 'class_name'], name='unique_id')
+                fields=["name", "app_name", "class_name"], name="unique_id"
+            )
         ]
 
     def __str__(self):
@@ -91,7 +92,9 @@ class Permissions(models.Model):
 class Permissions_Group(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(
-        Permissions, "Permissions_of_group",)
+        Permissions,
+        "Permissions_of_group",
+    )
 
     def __str__(self):
         return self.name
