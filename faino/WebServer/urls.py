@@ -1,6 +1,5 @@
 from django.urls import path
 from django.conf.urls import include
-from faino.WebServer.api_v1.urls import urlpatterns as api_urls
 from .views import (
     index,
     # Get_Device,
@@ -17,7 +16,6 @@ app_name = "WEBSERVER"
 urlpatterns = [
     # path("", index),
     path("update/<uuid:link>", Update_device, name="UPDATE_LINK"),
-    path("api/", include(api_urls), name="API"),
     # # Device urls
     # path("get_devices/", Get_Device.as_view(), name="DEVICE"),
     # path("cud_device/", CUD_Device.as_view(), name="CUD_DEVICE"),
