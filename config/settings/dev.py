@@ -34,7 +34,7 @@ INSTALLED_APPS.extend(
         "drf_spectacular_sidecar",
         "faino.WebServer",
         "faino.AuthSystem",
-        "faion.API",
+        "faino.API",
     ]
 )
 SITE_ID = 2
