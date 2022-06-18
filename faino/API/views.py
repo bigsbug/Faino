@@ -16,7 +16,6 @@ from faino.AuthSystem.models import New_User as USER
 from faino.AuthSystem.models import Permissions_Group
 
 
-
 from faino.WebServer.models import (
     Device as Device_Model,
     Command as Command_Model,
