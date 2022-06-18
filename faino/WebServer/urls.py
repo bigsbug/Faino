@@ -16,15 +16,4 @@ app_name = "WEBSERVER"
 urlpatterns = [
     # path("", index),
     path("update/<uuid:link>", Update_device, name="UPDATE_LINK"),
-    # # Device urls
-    # path("get_devices/", Get_Device.as_view(), name="DEVICE"),
-    # path("cud_device/", CUD_Device.as_view(), name="CUD_DEVICE"),
-    # # Data urls
-    # path("data/", Get_Data.as_view(), name="GET_DATA"),
-    # # Commands urls
-    # path("new_command/", New_Command.as_view(), name="SET_Command"),
-    # path("get_command/", Get_Command.as_view(), name="SET_Command"),
-    # # Buttons urls
-    # path("new_button/", New_Button.as_view(), name="New_BUTTON"),
-    # path("get_buttons/", Get_Buttons.as_view(), name="Get_BUTTONS"),
 ]
