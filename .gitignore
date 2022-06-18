@@ -2,7 +2,6 @@
 *~
 *.swp
 sources/*
-.env.devlopment
+.env.dev
 .env.production
-
-*DB-server
+.vscode
