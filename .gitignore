@@ -2,6 +2,5 @@
 *~
 *.swp
 sources/*
-.env.dev
-.env.production
+.env.*
 .vscode
