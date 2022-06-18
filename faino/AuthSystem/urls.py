@@ -15,8 +15,8 @@ from rest_framework.routers import DefaultRouter
 # urlpatterns = router.urls
 
 urlpatterns = [
-    path("ruls", get_all_urls, name="urls"),
-    path("singup/", User_API.as_view(), name="USER_API"),
-    path("forget_password/", Forget_Password.as_view(), name="FORGET_PASSWROD"),
-    path("confirm_email/", Confrim_Email.as_view(), name="CONFIRM_EMAIL"),
+    path("auth/ruls", get_all_urls, name="urls"),
+    path("auth/singup/", User_API.as_view(), name="USER_API"),
+    path("auth/forget_password/", Forget_Password.as_view(), name="FORGET_PASSWROD"),
+    path("auth/confirm_email/", Confrim_Email.as_view(), name="CONFIRM_EMAIL"),
 ]
