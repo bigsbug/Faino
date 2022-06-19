@@ -34,10 +34,7 @@ INSTALLED_APPS.extend(
         "drf_spectacular_sidecar",
         "faino.WebServer",
         "faino.AuthSystem",
-<<<<<<< HEAD
         "faino.API",
-=======
->>>>>>> 7da14fe (Development Files)
     ]
 )
 SITE_ID = 2
