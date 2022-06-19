@@ -1,5 +1,5 @@
 # Faino 
-**Faino** is a web server for IoT devices, based on python and Django framework, Faino it's an alternative form **Thingsboard** and **Toya** web servers and it provide some intersting feature
+**Faino** is a platform  for IoT devices, based on python and Django framework, Faino it's an alternative form **Thingsboard** and **Toya** web servers and it provide some intersting feature
 ### Features:
  - Connect devices over WebSocket
  - Accessing devices with a powerful Restful-API
