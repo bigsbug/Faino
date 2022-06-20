@@ -6,6 +6,7 @@ services:
     env_file:
       - ./dev.env
       - ./uvicorn.dev.env
+      - ./postgres.dev.env
     command: >
       uvicorn config.asgi:application 
           --reload 
@@ -18,7 +19,7 @@ services:
 
   postgres:
     env_file:
-      - ./.postgres.dev.env
+      - ./postgres.dev.env
     volumes:
       - db-data-test:/var/lib/postgresql/data:rw
 
