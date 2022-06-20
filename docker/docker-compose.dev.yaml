@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+  django:
+
+    build:
+      dockerfile: ./dockerfile
+
+    volumes:
+      - .:/src/:rw
+
+    env_file:
+      - config/dev.env
+
+    environment:
+      - SETTINGS=config.settings.dev
+      - REQUIREMENTS=/src/requirements/dev.txt
+
+    depends_on:
+      - redis
+      - postgres
+
+    ports:
+      - "8181:8000"
+
+  redis:
+    image: redis:alpine
+    restart: always
+    expose:
+      - 6380
+    ports:
+      - 6380:6379
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=djangoFaino
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django-password
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    expose:
+      - 5433
+    ports:
+      - 5433:5432
+
+volumes:
+  db-data:
