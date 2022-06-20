@@ -1,50 +1,26 @@
-version: '3'
-
 services:
-
   django:
-
-    build:
-      dockerfile: ./dockerfile
 
     volumes:
       - .:/src/:rw
-
     env_file:
-      - config/dev.env
-
-    environment:
-      - SETTINGS=config.settings.dev
-      - REQUIREMENTS=/src/requirements/dev.txt
-
-    depends_on:
-      - redis
-      - postgres
-
+      - ./dev.env
+      - ./uvicorn.dev.env
+    command: >
+      uvicorn config.asgi:application 
+          --reload 
+          --host ${DJANGO_IP} 
+          --port ${DJANGO_PORT} 
+          --workers ${WORKERS_COUNT_UVICORN} 
+          ${EXTRA_UVICORN_ARGS}
     ports:
-      - "8181:8000"
-
-  redis:
-    image: redis:alpine
-    restart: always
-    expose:
-      - 6380
-    ports:
-      - 6380:6379
+      - "8080:${DJANGO_PORT}"
 
   postgres:
-    image: postgres:alpine
-    restart: always
-    environment:
-      - POSTGRES_DB=djangoFaino
-      - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=django-password
+    env_file:
+      - ./.postgres.dev.env
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
-    expose:
-      - 5433
-    ports:
-      - 5433:5432
+      - db-data-test:/var/lib/postgresql/data:rw
 
 volumes:
-  db-data:
+  db-data-test:
