@@ -4,7 +4,7 @@ services:
     volumes:
       - .:/src/:rw
     env_file:
-      - ./dev.env
+      - ./django.dev.env
       - ./uvicorn.dev.env
       - ./postgres.dev.env
     command: >
