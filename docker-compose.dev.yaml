@@ -22,6 +22,11 @@ services:
       - ./config/postgres.dev.env
     volumes:
       - db-data-test:/var/lib/postgresql/data:rw
+  nginx:
+    env_file:
+      - ./config/uvicorn.dev.env
+    ports:
+      - 8000:80
 
 volumes:
   db-data-test:
