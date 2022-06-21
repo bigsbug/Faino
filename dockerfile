@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ARG REQUIREMENTS_FILE
 
 WORKDIR /src
-COPY ../ .
+COPY . .
 
 RUN pip install --no-cache-dir -r ${REQUIREMENTS_FILE}
 
