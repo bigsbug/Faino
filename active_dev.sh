@@ -1,5 +1,5 @@
 set -o allexport
-. ./uvicorn.dev.env
-. ./django.dev.env
-. ./postgres.dev.env
+. ./config/uvicorn.dev.env
+. ./config/django.dev.env
+. ./config/postgres.dev.env
 set +o allexport
