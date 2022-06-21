@@ -10,7 +10,7 @@ services:
     depends_on:
       - redis
       - postgres
-
+      
   redis:
     image: redis:alpine
     restart: always
@@ -20,11 +20,12 @@ services:
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data:rw
+      
   nginx:
-
     build:
       dockerfile: ./dockerfile.nginx
     restart: always
+
 
 volumes:
   db-data:

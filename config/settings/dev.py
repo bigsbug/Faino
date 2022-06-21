@@ -7,12 +7,15 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
+
 environ.Env.read_env(os.path.join(BASE_DIR / "docker/django.dev.env"))
+
 
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
+
 
 ALLOWED_HOSTS = str(env("ALLOWED_HOSTS")).strip().split()
 APPEND_SLASH = env("APPEND_SLASH")
@@ -22,6 +25,7 @@ EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
 
 # Application definition
 
@@ -67,6 +71,7 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": "postgres",
         "PORT": "5432",
+
     }
 }
 
