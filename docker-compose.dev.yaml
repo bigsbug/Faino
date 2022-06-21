@@ -1,8 +1,9 @@
 services:
-  django:
 
+  django:
     volumes:
       - .:/src/:rw
+      - statics:./static:rw
     env_file:
       - ./config/uvicorn.dev.env
       - ./config/django.dev.env
@@ -22,11 +23,15 @@ services:
       - ./config/postgres.dev.env
     volumes:
       - db-data-test:/var/lib/postgresql/data:rw
+
   nginx:
     env_file:
       - ./config/uvicorn.dev.env
     ports:
       - 8000:80
+    volumes:
+      - statics:/statics:rw
 
 volumes:
   db-data-test:
+  statics:
