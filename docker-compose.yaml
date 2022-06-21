@@ -20,6 +20,10 @@ services:
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data:rw
+  nginx:
+    build:
+      dockerfile: ./nginx/dockerfile
+    restart: always
 
 volumes:
   db-data:
