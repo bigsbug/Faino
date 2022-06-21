@@ -22,8 +22,7 @@ services:
       - db-data:/var/lib/postgresql/data:rw
   nginx:
     build:
-      context: nginx
-      dockerfile: ./dockerfile
+      dockerfile: nginx/dockerfile
     restart: always
 
 volumes:
