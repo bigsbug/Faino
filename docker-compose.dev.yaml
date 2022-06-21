@@ -3,7 +3,7 @@ services:
   django:
     volumes:
       - .:/src/:rw
-      - statics:./static:rw
+      - statics:/src/static:rw
     env_file:
       - ./config/uvicorn.dev.env
       - ./config/django.dev.env
