@@ -4,8 +4,8 @@ services:
     volumes:
       - .:/src/:rw
     env_file:
-      - ./django.dev.env
       - ./uvicorn.dev.env
+      - ./django.dev.env
       - ./postgres.dev.env
     command: >
       uvicorn config.asgi:application 
@@ -15,7 +15,7 @@ services:
           --workers ${WORKERS_COUNT_UVICORN} 
           ${EXTRA_UVICORN_ARGS}
     ports:
-      - "8080:${DJANGO_PORT}"
+      - ${DJANGO_PORT}:${DJANGO_PORT}
 
   postgres:
     env_file:

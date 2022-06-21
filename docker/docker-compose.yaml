@@ -4,7 +4,8 @@ services:
 
   django:
     build:
-      dockerfile: ./dockerfile.dev
+      context: ../
+      dockerfile: ./docker/dockerfile
       args:
         - REQUIREMENTS_FILE=${REQUIREMENTS_FILE}
     depends_on:
