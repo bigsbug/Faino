@@ -66,7 +66,7 @@
  - [ ] Fixing tests of API
  - [ ] Provide bash script to direct accessing to manage.py of Django in container
  - [ ] Provide logs file of each service in the *logs* folder
- - [ ] Create Development environment
+ - [ ] Create Production environment
  - [ ] Create contribute guideline
  - [ ] Document API app
  - [ ] Document WebServer App
