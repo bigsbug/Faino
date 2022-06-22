@@ -1,4 +1,6 @@
 # Faino 
+![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) 
+
 **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature
 ### Features:
  - Connect devices over WebSocket
@@ -17,3 +19,41 @@
  - Providing a profile per user for each device
  - Record activities of users and devices
  
+ ## Installation
+ ### Configs:
+ first things is modify envierment file from **config** folder:
+ #### dajngo config :
+|Config Name|Description|Required|
+|--|--|--|
+|REQUIREMENTS_FILE|The path of requirements.txt file|Yes
+|DJANGO_SETTINGS_MODULE|The path of django settings|Yes
+|SECRET_KEY|Secret key of django settings|Yes
+|ALLOWED_HOSTS|List of allowed host in django|Yes
+|DEBUG|Status of debuging|Yes
+|APPEND_SLASH|Status of appending slash in the end url|No
+|EMAIL_USE_TLS|Status of using tls for email service|No
+|EMAIL_HOST|Email provider host|Yes
+|EMAIL_PORT|Email port|Yes
+|EMAIL_HOST_USER|Email address|Yes
+|EMAIL_HOST_PASSWORD|Email password|Yes
+
+#### uvicorn config :
+|Config Name|Description|Required|
+|--|--|--|
+|DJANGO_IP|Django bind IP in the django service|Yes
+|DJANGO_PORT|Django port bhind in the django service|Yes
+|WORKERS_COUNT_UVICORN|Workers count of Uvicorn|Yes
+|EXTRA_UVICORN_ARGS|Pass extra config to Uvicorn|No
+
+#### postgres config :
+|Config Name|Description|Required|
+|--|--|--|
+|POSTGRES_DB|Name of Postgres DB|Yes
+|POSTGRES_USER|User of Postgres DB|Yes
+|POSTGRES_PASSWORD|Password of Postgres DB|Yes
+
+**Tip  :**
+>Some of the Configs by default are available and you edit some of those.
+
+**Config Place** :
+>you can find here available configs: **Config/***[name config]****.***[mod]***.env**
