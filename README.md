@@ -64,7 +64,7 @@
 
  - [ ] Create Dashboard
  - [ ] Fixing tests of API
- - [ ] Provide bash script to direct accessing to manage.py of Django in container
+ - [x] Provide bash script to direct accessing to manage.py of Django in container
  - [ ] Provide logs file of each service in the *logs* folder
  - [ ] Create Production environment
  - [ ] Create contribute guideline
