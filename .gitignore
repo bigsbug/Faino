@@ -2,5 +2,6 @@
 *~
 *.swp
 sources/*
+static/*
 *.env
 .vscode
