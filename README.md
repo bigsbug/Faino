@@ -21,7 +21,8 @@
  
  ## Installation
  ### Configs:
- first things is modify envierment file from **config** folder:
+ the config files are used from the Faino and Docker services there are some environment files and some python files to config how to work and customize the project with your needs
+ 
  #### dajngo config :
 |Config Name|Description|Required|
 |--|--|--|
@@ -52,8 +53,23 @@
 |POSTGRES_USER|User of Postgres DB|Yes
 |POSTGRES_PASSWORD|Password of Postgres DB|Yes
 
+
 **Tip  :**
 >Some of the Configs by default are available and you edit some of those.
 
 **Config Place** :
 >you can find here available configs: **Config/***[name config]****.***[mod]***.env**
+
+## TODO
+
+ - [ ] Create Dashboard
+ - [ ] Fixing tests of API
+ - [ ] Provide bash script to direct accessing to manage.py of Django in container
+ - [ ] Provide logs file of each service in the *logs* folder
+ - [ ] Create Development environment
+ - [ ] Create contribute guideline
+ - [ ] Document API app
+ - [ ] Document WebServer App
+ - [ ] Document AuthSystem App
+ - [ ] Document Quickstart
+ - [ ] Section Development
