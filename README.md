@@ -1,8 +1,19 @@
 # Faino 
 ![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) 
 
-**Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature
-### Features:
+## **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature
+
+## Table of Contents
+ -  [Features](#features)
+ -  [Installation](#installation) 
+	 - [Config](#configs)
+		 - [Django config](#dajngo-config)
+		 - [Uvicorn config](#uvicorn-config)
+		 - [Postgres config](#postgres-config)
+ -  [Usage](#usage) [ Unvaliable ]
+ -  [ToDo](#todo)
+
+## Features
  - Connect devices over WebSocket
  - Accessing devices with a powerful Restful-API
  - Offers some permission like **OWNER**, **ADMIN**, **MEMBER**
@@ -23,7 +34,7 @@
  ### Configs:
  the config files are used from the Faino and Docker services there are some environment files and some python files to config how to work and customize the project with your needs
  
- #### dajngo config :
+ #### dajngo config:
 |Config Name|Description|Required|
 |--|--|--|
 |REQUIREMENTS_FILE|The path of requirements.txt file|Yes
@@ -38,7 +49,7 @@
 |EMAIL_HOST_USER|Email address|Yes
 |EMAIL_HOST_PASSWORD|Email password|Yes
 
-#### uvicorn config :
+#### uvicorn config:
 |Config Name|Description|Required|
 |--|--|--|
 |DJANGO_IP|Django bind IP in the django service|Yes
@@ -46,7 +57,7 @@
 |WORKERS_COUNT_UVICORN|Workers count of Uvicorn|Yes
 |EXTRA_UVICORN_ARGS|Pass extra config to Uvicorn|No
 
-#### postgres config :
+#### postgres config:
 |Config Name|Description|Required|
 |--|--|--|
 |POSTGRES_DB|Name of Postgres DB|Yes
@@ -66,7 +77,7 @@
  - [ ] Fixing tests of API
  - [x] Provide bash script to direct accessing to manage.py of Django in container
  - [ ] Provide logs file of each service in the *logs* folder
- - [ ] Create Production environment
+ - [x] Create Development environment
  - [ ] Create contribute guideline
  - [ ] Document API app
  - [ ] Document WebServer App
