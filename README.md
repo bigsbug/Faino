@@ -34,7 +34,7 @@
  
  ## Installation
  ### Configs:
- the config files are used from the Faino and Docker services there are some environment files and some python files to config how to work and customize the project with your needs
+ the config files are used by the Faino and Docker services, there are some environment files and some python files to config how to work and customize the project with your needs
  
  #### dajngo config:
 |Config Name|Description|Required|
