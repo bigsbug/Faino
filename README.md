@@ -1,12 +1,14 @@
 # Faino 
 ![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) 
 
-## **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature
+## Description
+ **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature
 
 ## Table of Contents
+ - [Description](#description)
  -  [Features](#features)
  -  [Installation](#installation) 
-	 - [Config](#configs)
+	+ [Config](#configs)
 		 - [Django config](#dajngo-config)
 		 - [Uvicorn config](#uvicorn-config)
 		 - [Postgres config](#postgres-config)
