@@ -53,9 +53,16 @@ or following the [official document of python](https://docs.python.org/3/library
 after complate the configs your should run this script in your terminal :
 
     $ ./install-service.sh
-this command build the images and run the containter
- 
+this command build the images and run the containter. 
+
+The next step is creating a new superuser, but the default superuser is inactivated so you should active this with the API endpoint, basically, after creating a new user you must request to send a confirmation code to your email, then send the code you received to an endpoint to confirm and activate your account/user,
+but you can create a new active superuser so easily by this command without any confirmation email:
+
+    ./django-manager.sh createactivesuperuser
+
 there are some scripts available for convenience like :
+**django-manager.sh :**
+ - > alternative for manage.py of Django but in the container, you can use it like normal manage.py
 
 **start-service.dev.sh :**
  - > Starting Faino development environment again, after changing some of the configs or when is stopping
@@ -63,8 +70,7 @@ there are some scripts available for convenience like :
 **stop-service.dev.sh :**
  - > Stoping Faino Development Environment
 
-**django-manager.sh :**
- - > alternative for manage.py of Django but in the container you can use it like normal manage.py
+
 
 ## Configs:
  the config files are used by the Faino and Docker services, there are some environment files and some python files to config how to work and customize the project with your needs
