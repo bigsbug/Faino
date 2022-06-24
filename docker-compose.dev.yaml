@@ -17,6 +17,8 @@ services:
       - db-data-test:/var/lib/postgresql/data:rw
 
   nginx:
+    depends_on:
+      - django
     env_file:
       - ./config/uvicorn.dev.env
     ports:
