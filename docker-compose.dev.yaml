@@ -21,8 +21,6 @@ services:
           --port ${DJANGO_PORT} 
           --workers ${WORKERS_COUNT_UVICORN} 
           ${EXTRA_UVICORN_ARGS}
-    ports:
-      - ${DJANGO_PORT}:${DJANGO_PORT}
 
   postgres:
     env_file:
