@@ -8,8 +8,14 @@ services:
       - ./config/uvicorn.dev.env
       - ./config/django.dev.env
       - ./config/postgres.dev.env
-    command: >
-      uvicorn config.asgi:application 
+    command:
+      - /bin/bash
+      - -c
+      - |
+        python3 manage.py collectstatic --noinput 
+        python3 manage.py makemigrations --noinput
+        python3 manage.py migrate --noinput
+        uvicorn config.asgi:application 
           --reload 
           --host ${DJANGO_IP} 
           --port ${DJANGO_PORT} 
