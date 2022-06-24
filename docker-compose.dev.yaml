@@ -8,19 +8,7 @@ services:
       - ./config/uvicorn.dev.env
       - ./config/django.dev.env
       - ./config/postgres.dev.env
-    command:
-      - /bin/bash
-      - -c
-      - |
-        python3 manage.py collectstatic --noinput 
-        python3 manage.py makemigrations --noinput
-        python3 manage.py migrate --noinput
-        uvicorn config.asgi:application 
-          --reload 
-          --host ${DJANGO_IP} 
-          --port ${DJANGO_PORT} 
-          --workers ${WORKERS_COUNT_UVICORN} 
-          ${EXTRA_UVICORN_ARGS}
+    entrypoint: [ "bash", "./entrypoint.dev.sh" ]
 
   postgres:
     env_file:
@@ -29,6 +17,8 @@ services:
       - db-data-test:/var/lib/postgresql/data:rw
 
   nginx:
+    depends_on:
+      - django
     env_file:
       - ./config/uvicorn.dev.env
     ports:
