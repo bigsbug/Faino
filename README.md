@@ -61,6 +61,7 @@ but you can create a new active superuser so easily by this command without any 
     ./django-manager.sh createactivesuperuser
 
 there are some scripts available for convenience like :
+
 **django-manager.sh :**
  - > alternative for manage.py of Django but in the container, you can use it like normal manage.py
 
