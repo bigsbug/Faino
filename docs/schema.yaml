@@ -1,0 +1,1536 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /api/auth/confirm_email/:
+    get:
+      operationId: auth_confirm_email_retrieve
+      summary: Sended activation code to email
+      parameters:
+      - in: query
+        name: email
+        schema:
+          type: string
+          format: email
+          minLength: 1
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: auth_confirm_email_create
+      summary: 'Confirm activation code '
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Confirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/forget_password/:
+    get:
+      operationId: auth_forget_password_retrieve
+      summary: Send Confirm code to email
+      parameters:
+      - in: query
+        name: email
+        schema:
+          type: string
+          format: email
+          minLength: 1
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: auth_forget_password_create
+      summary: 'Confirm activation code '
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Confirm_Forget'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '304':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/auth/singup/:
+    get:
+      operationId: auth_singup_retrieve
+      summary: User profile
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_User'
+          description: ''
+    post:
+      operationId: auth_singup_create
+      summary: Sing in new user
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_User'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    put:
+      operationId: auth_singup_update
+      summary: Full update profile
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_User'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: auth_singup_partial_update
+      summary: Partial update profile
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_User'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_User'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/:
+    get:
+      operationId: device_list
+      summary: Get All Devices of User
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '400':
+          description: No response body
+    post:
+      operationId: device_create
+      summary: Create a new device
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/{id}/:
+    get:
+      operationId: device_retrieve
+      summary: 'Retrieve a special device with the UUID token '
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          minLength: 1
+        description: Token of user
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '404':
+          description: No response body
+    put:
+      operationId: device_update
+      summary: Full Update a Device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          minLength: 1
+        description: Token of user
+        required: true
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_Device'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '404':
+          description: No response body
+    patch:
+      operationId: device_partial_update
+      summary: Partial Update a Device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          minLength: 1
+        description: Token of user
+        required: true
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_Device'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSerializer_Device'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '404':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                invalid: Invalid data. Expected a dictionary, but got {datatype}.
+          description: ''
+    delete:
+      operationId: device_destroy
+      summary: Delete Device with Token
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token of user
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '204':
+          description: No response body
+  /api/device/{id}/button/:
+    get:
+      operationId: button_RC
+      summary: Get all buttons of the Device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Buttons'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: device_button_create
+      summary: Create new button
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_Buttons'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Buttons'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_Buttons'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Buttons'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/{id}/buttons/{id_button}/:
+    get:
+      operationId: device_buttons_retrieve
+      summary: Retrieve a button
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      - in: path
+        name: id_button
+        schema:
+          type: number
+        description: ID of button
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Buttons'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    put:
+      operationId: device_buttons_update
+      summary: Full update the button
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      - in: path
+        name: id_button
+        schema:
+          type: number
+        description: ID of button
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Buttons'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: device_buttons_partial_update
+      summary: Partial update the button
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      - in: path
+        name: id_button
+        schema:
+          type: number
+        description: ID of button
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Buttons'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    delete:
+      operationId: device_buttons_destroy
+      summary: Delete the button
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      - in: path
+        name: id_button
+        schema:
+          type: number
+        description: ID of button
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema: null
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/{id}/command/:
+    get:
+      operationId: device_command_retrieve
+      summary: Get all commands
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Toekn Device
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Command'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: device_command_create
+      summary: Send new command to the device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Toekn Device
+        required: true
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_Command'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_Command'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_Command'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Command'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/{id}/data/:
+    get:
+      operationId: device_data_retrieve
+      summary: get logs of the device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token of user
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device_Data'
+          description: ''
+        '404':
+          description: No response body
+  /api/device/{id}/users/:
+    get:
+      operationId: device_users_retrieve
+      summary: Get all users of device
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: Token Device
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_UserDevice'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: device_users_create
+      summary: Create a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: user token
+        required: true
+      tags:
+      - device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Serializer_UserDevice_INPUT_REQUEST'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Serializer_UserDevice_INPUT_REQUEST'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Serializer_UserDevice_INPUT_REQUEST'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Profile'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/{id}/users/{user_token}/:
+    get:
+      operationId: device_users_retrieve_2
+      summary: Retrieve a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: user token
+        required: true
+      - in: path
+        name: user_token
+        schema:
+          type: string
+          format: uuid
+        description: target token
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Profile'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: device_users_create_2
+      summary: update a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: user token
+        required: true
+      - in: path
+        name: user_token
+        schema:
+          type: string
+          format: uuid
+        description: target token
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Profile'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: device_users_partial_update
+      summary: update partial a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: user token
+        required: true
+      - in: path
+        name: user_token
+        schema:
+          type: string
+          format: uuid
+        description: target token
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Profile'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    delete:
+      operationId: device_users_destroy
+      summary: Delete a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: user token
+        required: true
+      - in: path
+        name: user_token
+        schema:
+          type: string
+          format: uuid
+        description: target token
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Profile'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/device/filter/{type}/:
+    get:
+      operationId: device_filter_retrieve
+      summary: 'Filter Device With Tyep  '
+      parameters:
+      - in: path
+        name: type
+        schema:
+          type: string
+        description: type of Device
+        required: true
+      tags:
+      - device
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serializer_Device'
+          description: ''
+        '404':
+          description: No response body
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    PatchedSerializer_Device:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 36
+        description:
+          type: string
+          maxLength: 600
+        token:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          type: boolean
+        type:
+          type: string
+        ip:
+          type: string
+          maxLength: 64
+        mac:
+          type: string
+          maxLength: 17
+        password:
+          type: string
+          maxLength: 62
+        buttons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Serializer_Buttons'
+          readOnly: true
+        user_profile:
+          type: string
+          readOnly: true
+    PatchedSerializer_User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          maxLength: 128
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 11
+        company:
+          type: string
+          nullable: true
+          maxLength: 60
+        membership:
+          type: string
+          format: date-time
+          nullable: true
+    SerializerCommandTypeEnum:
+      enum:
+      - CS
+      - CU
+      type: string
+    SerializerUserDeviceINPUTREQUESTTypeEnum:
+      enum:
+      - owner
+      - admin
+      - member
+      type: string
+    Serializer_Buttons:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        control_name:
+          type: string
+          maxLength: 80
+        device:
+          type: string
+          format: uuid
+        is_star:
+          type: boolean
+        name:
+          type: string
+          maxLength: 80
+        array:
+          type: string
+      required:
+      - array
+      - control_name
+      - device
+      - id
+      - name
+    Serializer_Command:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/SerializerCommandTypeEnum'
+        command:
+          type: object
+          additionalProperties: {}
+        status:
+          type: boolean
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+        time_completed:
+          type: string
+          format: date-time
+          nullable: true
+        device:
+          type: string
+          format: uuid
+      required:
+      - command
+      - date
+      - device
+      - id
+      - type
+    Serializer_Confirm:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 8
+        email:
+          type: string
+          format: email
+      required:
+      - code
+      - email
+    Serializer_Confirm_Forget:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 8
+        password:
+          type: string
+          maxLength: 60
+        password2:
+          type: string
+          maxLength: 60
+      required:
+      - code
+      - password
+      - password2
+    Serializer_Device:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 36
+        description:
+          type: string
+          maxLength: 600
+        token:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          type: boolean
+        type:
+          type: string
+        ip:
+          type: string
+          maxLength: 64
+        mac:
+          type: string
+          maxLength: 17
+        password:
+          type: string
+          maxLength: 62
+        buttons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Serializer_Buttons'
+          readOnly: true
+        user_profile:
+          type: string
+          readOnly: true
+      required:
+      - buttons
+      - name
+      - token
+      - type
+      - user_profile
+    Serializer_Device_Data:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data
+      - date
+    Serializer_Profile:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 24
+        type:
+          type: integer
+          nullable: true
+        token:
+          type: string
+          format: uuid
+          readOnly: true
+        join_time:
+          type: string
+          format: date-time
+          readOnly: true
+        last_activate:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - join_time
+      - name
+      - token
+    Serializer_User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          maxLength: 128
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 11
+        company:
+          type: string
+          nullable: true
+          maxLength: 60
+        membership:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - email
+      - password
+      - phone
+      - username
+    Serializer_UserDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 24
+        token:
+          type: string
+          format: uuid
+          readOnly: true
+        join_time:
+          type: string
+          format: date-time
+          readOnly: true
+        last_activate:
+          type: string
+          format: date-time
+          nullable: true
+        user:
+          type: integer
+        device:
+          type: string
+          format: uuid
+        type:
+          type: integer
+          nullable: true
+      required:
+      - device
+      - id
+      - join_time
+      - name
+      - token
+      - user
+    Serializer_UserDevice_INPUT_REQUEST:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 24
+        type:
+          $ref: '#/components/schemas/SerializerUserDeviceINPUTREQUESTTypeEnum'
+        user:
+          type: string
+          format: email
+      required:
+      - name
+      - type
+      - user
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
