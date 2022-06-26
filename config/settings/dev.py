@@ -75,7 +75,9 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-
+MIDDLEWARE += [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
 
 AUTHENTICATION_BACKENDS = [
     # 'AuthSystem.auth_system.Custom_User_BackendModel',
