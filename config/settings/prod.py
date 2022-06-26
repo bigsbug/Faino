@@ -17,7 +17,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 # Set defualt urls
-ROOT_URLCONF = "config.urls.dev"
+ROOT_URLCONF = "config.urls.prod"
 
 ALLOWED_HOSTS = str(env("ALLOWED_HOSTS")).strip().split()
 APPEND_SLASH = env("APPEND_SLASH")
