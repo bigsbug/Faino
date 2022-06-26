@@ -94,12 +94,26 @@ there are some scripts available for convenience like :
 |EMAIL_HOST_PASSWORD|Email password [see more](https://docs.djangoproject.com/en/4.0/ref/settings/#email-host-password)|Yes
 
 #### uvicorn config:
+
+> **Available in development mode only**
+
 |Config Name|Description|Required|
 |--|--|--|
 |DJANGO_IP|Django bind IP in the django service|Yes
 |DJANGO_PORT|Django port bhind in the django service|Yes
 |WORKERS_COUNT_UVICORN|Workers count of Uvicorn [see more](https://www.uvicorn.org/settings/#production)|Yes
 |EXTRA_UVICORN_ARGS|Pass extra config to Uvicorn [see more](https://www.uvicorn.org/settings/)|No
+
+#### gunicorn config:
+
+> **Available in production mode only**
+
+|Config Name|Description|Required|
+|--|--|--|
+|DJANGO_IP|Django bind IP in the django service|Yes
+|DJANGO_PORT|Django port bhind in the django service|Yes
+|WORKERS_COUNT|Workers count of Gunicorn [see more](https://docs.gunicorn.org/en/latest/settings.html?highlight=workers#workers)|Yes
+|EXTRA_ARGS|Pass extra config to Gunicorn [see more](https://docs.gunicorn.org/en/latest/settings.html)|No
 
 #### postgres config:
 |Config Name|Description|Required|
@@ -128,3 +142,5 @@ there are some scripts available for convenience like :
  - [ ] Document AuthSystem App
  - [ ] Document Quickstart
  - [x] Section Development
+ - [x] Production Mode
+ - [x] Development Mode
