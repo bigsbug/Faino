@@ -1,0 +1,30 @@
+services:
+
+  django:
+    volumes:
+      - statics:/src/static:rw
+    env_file:
+      - ./config/gunicorn.prod.env
+      - ./config/django.prod.env
+      - ./config/postgres.prod.env
+    entrypoint: [ "bash", "./entrypoint.prod.sh" ]
+
+  postgres:
+    env_file:
+      - ./config/postgres.prod.env
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+
+  nginx:
+    depends_on:
+      - django
+    env_file:
+      - ./config/gunicorn.prod.env
+    ports:
+      - 80:80
+    volumes:
+      - statics:/statics:rw
+
+volumes:
+  db-data:
+  statics:
