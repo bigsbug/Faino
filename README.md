@@ -2,7 +2,7 @@
 ![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) ![enter image description here](https://img.shields.io/github/commit-activity/y/bigsbug/faino)
 
 ## Description
- **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting feature.
+ **Faino** is a platform for IoT devices, based on python and Django frameworks, Faino it’s an alternative for Thingsboard and Toya web servers and it provides some exciting features.
 with the Faino you can provide a platform for others to create accounts and register unlimited IoT devices and manage them. you can connect your IoT devices over WebSocket and control devices via HTTP API, by sending custom commands, letting them to checking the status of the devices in real-time, and update the devices online
 
 ## Table of Contents
@@ -22,22 +22,25 @@ with the Faino you can provide a platform for others to create accounts and regi
 
 ## Features
  - Connect devices over WebSocket
- - Accessing devices with a powerful Restful-API
- - Offers some permission like **OWNER**, **ADMIN**, **MEMBER**
  - Registering unlimited devices to the server
+ - Accessing devices with a powerful Restful-API
+ - Create Customize permissions for your users to access your devices
+ - Offers some permission like **OWNER**, **ADMIN**, **MEMBER**
+ - Provide permissions to other users to accessing to your devices
+ -  Two-step authentication
  - Possession transition of devices to other users
  - Connect devices to the server with token authentication
- - Provide permissions to other users to accessing to your devices
- - Two-step authentication
+ - Save Custome commands as a button
+ - Grouping a some of related commands as a Control
  - Send customize commands to devices over Websocket with HTTP API
- - Create Customize permissions for your users to access your devices
  - Create a queue of commands to send to devices
  - Check the status of devices in real-time
  - Update source code IoT devices over the server in real-time
  - Providing a profile per user for each device
  - Record activities of users and devices
+ 
  ## Requirements
-the only thing you needs is to install the below software:
+the only thing you needs is to install the below softwares:
  - [Docker](https://docs.docker.com/get-docker/)
  - [Docker Compose](https://docs.docker.com/compose/install/)
 
