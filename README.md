@@ -1,6 +1,3 @@
-
-
-
 # Faino 
 ![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) ![enter image description here](https://img.shields.io/github/commit-activity/y/bigsbug/faino)
 
@@ -13,6 +10,8 @@ with the Faino you can provide a platform for others to create accounts and regi
  -  [Features](#features)
  - [Requirements](#requirements)
  -  [Installation](#installation) 
+	 - [Development Setup](#development-setup)
+ 	 - [Production Setup](#production-setup)
  - [Config](#configs)
 	- [Django config](#dajngo-config)
 	- [Uvicorn config](#uvicorn-config)
