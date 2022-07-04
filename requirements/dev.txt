@@ -22,7 +22,7 @@ drf-spectacular==0.22.1
 drf-spectacular-sidecar==2022.6.1
 gevent==21.12.0
 greenlet==1.1.2
-gunicorn @ git+https://github.com/bigsbug/gunicorn.git@933b210f2eff943f4cd9502c676f3d93c82f171c
+gunicorn @ git+https://github.com/bigsbug/gunicorn.git@7ee5167b86a8c3f0cc7dcdc999987fa9f4309513
 h11==0.13.0
 hiredis==2.0.0
 hyperlink==21.0.0
