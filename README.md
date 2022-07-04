@@ -1,3 +1,4 @@
+
 # Faino 
 ![enter image description here](https://img.shields.io/badge/License-GPL--3.0-green) ![enter image description here](https://img.shields.io/github/commit-activity/y/bigsbug/faino)
 
@@ -14,7 +15,6 @@ with the Faino you can provide a platform for others to create accounts and regi
  	 - [Production Setup](#production-setup)
  - [Config](#configs)
 	- [Django config](#dajngo-config)
-	- [Uvicorn config](#uvicorn-config)
 	- [Gunicorn config](#gunicorn-config)
 	- [Postgres config](#postgres-config)
  -  [Usage](#usage) [ Unvaliable ]
@@ -134,20 +134,7 @@ there are some scripts available for convenience like :
 |EMAIL_HOST_USER|Email address [see more](https://docs.djangoproject.com/en/4.0/ref/settings/#email-host-user)|Yes
 |EMAIL_HOST_PASSWORD|Email password [see more](https://docs.djangoproject.com/en/4.0/ref/settings/#email-host-password)|Yes
 
-#### uvicorn config:
-
-> **Available in development mode only**
-
-|Config Name|Description|Required|
-|--|--|--|
-|DJANGO_IP|Django bind IP in the django service|Yes
-|DJANGO_PORT|Django port bhind in the django service|Yes
-|WORKERS_COUNT_UVICORN|Workers count of Uvicorn [see more](https://www.uvicorn.org/settings/#production)|Yes
-|EXTRA_UVICORN_ARGS|Pass extra config to Uvicorn [see more](https://www.uvicorn.org/settings/)|No
-
 #### gunicorn config:
-
-> **Available in production mode only**
 
 |Config Name|Description|Required|
 |--|--|--|
