@@ -10,5 +10,6 @@ ARG REQUIREMENTS_FILE
 WORKDIR /src
 COPY . .
 
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r ${REQUIREMENTS_FILE}
 
