@@ -33,16 +33,16 @@ class ApiConfig(AppConfig):
         from faino.AuthSystem.models import Permissions, Permissions_Group
         from faino.WebServer import signals
 
-        # try:
-        #     Create_Permissinos()
-        # except OperationalError as Error:
-        #     print(f"Error : {Error}")
+        try:
+            Create_Permissinos()
+        except OperationalError as Error:
+            print(f"Error : {Error}")
 
-        # try:  # make default permission group for owner users
-        #     Owner_group = Permissions_Group(name="owner")
-        #     Owner_group.save()
-        #     permissions = Permissions.objects.all()
-        #     Owner_group.permissions.set(permissions)
-        #     DEFAULT_TYPE = Owner_group.save()
-        # except IntegrityError:
-        #     pass
+        try:  # make default permission group for owner users
+            Owner_group = Permissions_Group(name="owner")
+            Owner_group.save()
+            permissions = Permissions.objects.all()
+            Owner_group.permissions.set(permissions)
+            DEFAULT_TYPE = Owner_group.save()
+        except IntegrityError:
+            ...
