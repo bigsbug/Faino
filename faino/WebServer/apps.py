@@ -1,4 +1,3 @@
-from pkgutil import iter_modules
 from django.apps import AppConfig
 
 
