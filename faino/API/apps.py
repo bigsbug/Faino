@@ -31,7 +31,6 @@ class ApiConfig(AppConfig):
 
     def ready(self):
         from faino.AuthSystem.models import Permissions, Permissions_Group
-        from faino.WebServer import signals
 
         try:
             Create_Permissinos()
