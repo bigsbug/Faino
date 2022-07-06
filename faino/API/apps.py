@@ -17,9 +17,9 @@ def Create_Permissinos():
             except:
                 Permissions(name=key, app_name="WebServer", class_name="Device").save()
 
-    for item in Permissions.objects.filter(app_name="WebServer", class_name="Device"):
+    # Remove not found endpoints
+    for item in Permissions.objects.filter(app_name="API", class_name="Device"):
 
-        # print(f"{item.name}  {(item.name not in list_funcation)}")
         if item.name not in list_funcation:
             print(item.name)
             item.delete()
