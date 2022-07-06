@@ -4,18 +4,16 @@ from django.db import IntegrityError, OperationalError
 
 def Create_Permissinos():
     from faino.AuthSystem.models import Permissions
-    from faino.WebServer.api_v1.views import Device_API
+    from faino.API.views import Device_API
 
     list_funcation = []
     for key, value in Device_API.__dict__.items():
         if callable(value):
             list_funcation.append(key)
             try:
-                Permissions.objects.get(
-                    name=key, app_name="WebServer", class_name="Device"
-                )
+                Permissions.objects.get(name=key, app_name="API", class_name="Device")
             except:
-                Permissions(name=key, app_name="WebServer", class_name="Device").save()
+                Permissions(name=key, app_name="API", class_name="Device").save()
 
     # Remove not found endpoints
     for item in Permissions.objects.filter(app_name="API", class_name="Device"):
