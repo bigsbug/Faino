@@ -75,7 +75,7 @@ class UserConfirm(ExpireTime, models.Model):
         super(UserConfirm, self).save(*args, **kwargs)
 
 
-class Permissions(models.Model):
+class Endpoints(models.Model):
     name = models.CharField(max_length=100)
     app_name = models.CharField(max_length=100)
     class_name = models.CharField(max_length=100)
@@ -94,7 +94,7 @@ class Permissions(models.Model):
 class Permissions_Group(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(
-        Permissions,
+        Endpoints,
         "Permissions_of_group",
     )
 

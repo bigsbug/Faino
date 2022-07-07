@@ -4,7 +4,7 @@ from faino.AuthSystem.models import (
     NewUser,
     TempLink,
     UserConfirm,
-    Permissions,
+    Endpoints,
     Permissions_Group,
 )
 from faino.AuthSystem.froms import Permissions_Grup_FORM

@@ -1,11 +1,11 @@
 from django import forms
-from faino.AuthSystem.models import Permissions_Group, Permissions
+from faino.AuthSystem.models import Permissions_Group, Endpoints
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 class Permissions_Grup_FORM(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
-        queryset=Permissions.objects.all(),
+        queryset=Endpoints.objects.all(),
         widget=FilteredSelectMultiple("Permission Name", False),
     )
 
