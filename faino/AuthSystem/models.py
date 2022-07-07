@@ -19,6 +19,12 @@ def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
 
 
 class ExpireTime(models.Model):
+    """Expire time fields and mehods in abstract mode
+
+    Args:
+        models (_type_): _description_
+    """
+
     def expire_time():
         return create_expire_time(seconds=10)
 
@@ -41,6 +47,7 @@ class NewUser(AbstractUser):
 
 
 class TempLink(ExpireTime, models.Model):
+    """Temp link for provide some files with security"""
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True
@@ -53,6 +60,8 @@ class TempLink(ExpireTime, models.Model):
 
 
 class UserConfirm(ExpireTime, models.Model):
+    """confirm user activate wiht random code"""
+
     LENGTH_CODE: int = 5
 
     # Generate Random Code Between 0 to 9
@@ -76,6 +85,9 @@ class UserConfirm(ExpireTime, models.Model):
 
 
 class Endpoints(models.Model):
+    """Creating a record for each endpoint for use in the permission system
+    with the name of the endpoint and the class name and the app name"""
+
     name = models.CharField(max_length=100)
     app_name = models.CharField(max_length=100)
     class_name = models.CharField(max_length=100)
@@ -92,6 +104,9 @@ class Endpoints(models.Model):
 
 
 class PermissionGroup(models.Model):
+    """Grouping a set of endpoints to create permissions
+    for checking which users can use each endpoint"""
+
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(
         Endpoints,
