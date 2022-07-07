@@ -100,7 +100,7 @@ class Confrim_Email(APIView):
         user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(UserConfirm, user=user)
 
-        if confirm_user.valid_code(data.get("code", 0)) != True:
+        if confirm_user.is_valid_code(data.get("code", 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
         if confirm_user.check_expired() != True:
@@ -184,7 +184,7 @@ class Forget_Password(APIView):
         # user = NewUser.objects.get(email=data.get('email', None))
         # confirm_user = UserConfirm.objects.get(user=user)
 
-        if confirm_user.valid_code(data.get("code", 0)) != True:
+        if confirm_user.is_valid_code(data.get("code", 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
         password1 = data.get("password", 0)
         password2 = data.get("password2", 1)

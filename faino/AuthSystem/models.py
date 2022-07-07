@@ -55,7 +55,7 @@ class TempLink(ExpireTime, models.Model):
     ip = models.GenericIPAddressField()
     file = models.FileField()
 
-    def check_ip(self, ip: models.GenericIPAddressField) -> bool:
+    def is_valid_ip(self, ip: models.GenericIPAddressField) -> bool:
         return ip == self.ip
 
 
@@ -73,7 +73,7 @@ class UserConfirm(ExpireTime, models.Model):
     code = models.CharField(max_length=LENGTH_CODE, default=generate_code, unique=True)
     token = models.UUIDField(default=uuid4, unique=True)
 
-    def valid_code(self, input_code):
+    def is_valid_code(self, input_code):
         return input_code == self.code
 
     def __str__(self) -> str:
