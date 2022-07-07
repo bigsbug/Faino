@@ -52,28 +52,19 @@ def make_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
     )
 
 
-class Temp_link(models.Model):
-    def expire_time():
-        return make_expire_time(seconds=10)
+class Temp_link(ExpireTime, models.Model):
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True
     )
-    expire = models.DateTimeField(default=expire_time)
     ip = models.GenericIPAddressField()
     file = models.FileField()
-
-    def check_expired(self) -> bool:
-        return self.expire > timezone.now()
 
     def check_ip(self, ip: models.GenericIPAddressField) -> bool:
         return ip == self.ip
 
 
-class Confirm_User(models.Model):
-    def expire_time():
-        return make_expire_time(hours=2)
-
+class Confirm_User(ExpireTime, models.Model):
     def random_code():
         chars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
         return get_random_string(8, chars)
@@ -81,10 +72,6 @@ class Confirm_User(models.Model):
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
     code = models.CharField(max_length=8, default=random_code, unique=True)
     token = models.UUIDField(default=uuid4, unique=True)
-    expire = models.DateTimeField(default=expire_time)
-
-    def check_expired(self):
-        return self.expire > timezone.now()
 
     def valid_code(self, input_code):
         return input_code == self.code
