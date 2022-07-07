@@ -8,6 +8,30 @@ from uuid import uuid4
 from django.utils.crypto import get_random_string
 
 
+def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
+
+    return timezone.now() + timedelta(
+        days=days,
+        seconds=seconds,
+        minutes=minutes,
+        hours=hours,
+        weeks=weeks,
+    )
+
+
+class ExpireTime(models.Model):
+    def expire_time():
+        return create_expire_time(seconds=10)
+
+    expire = models.DateTimeField(default=expire_time)
+
+    def is_expired(self) -> bool:
+        return self.expire > timezone.now()
+
+    class Meta:
+        abstract = True
+
+
 class NewUser(AbstractUser):
     phone = models.CharField(max_length=11, unique=True)
     company = models.fields.CharField(max_length=60, blank=True, null=True)
