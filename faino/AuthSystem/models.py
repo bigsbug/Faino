@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from datetime import timedelta
 from django.utils import timezone
 from uuid import uuid4
-
+import random
 from django.utils.crypto import get_random_string
 
 
@@ -54,12 +54,15 @@ class Temp_link(ExpireTime, models.Model):
 
 
 class Confirm_User(ExpireTime, models.Model):
-    def random_code():
-        chars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-        return get_random_string(8, chars)
+    LENGTH_CODE: int = 5
+
+    # Generate Random Code Between 0 to 9
+    def generate_code(length: int = 5) -> str:
+        code = "".join([str(random.randint(0, 9)) for _ in range(LENGTH_CODE)])
+        return code
 
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
-    code = models.CharField(max_length=8, default=random_code, unique=True)
+    code = models.CharField(max_length=LENGTH_CODE, default=generate_code, unique=True)
     token = models.UUIDField(default=uuid4, unique=True)
 
     def valid_code(self, input_code):
