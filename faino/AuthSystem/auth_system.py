@@ -1,7 +1,7 @@
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.hashers import check_password, make_password
-from faino.AuthSystem.models import New_User
+from faino.AuthSystem.models import NewUser
 from django.http import HttpRequest
 from typing import Optional, Any
 
@@ -18,7 +18,7 @@ class Custom_User_BackendModel(BaseBackend):
             hashed_password = make_password(
                 password,
             )
-            User: New_User = New_User.objects.get(username=username)
+            User: NewUser = NewUser.objects.get(username=username)
             print("USER EXiST")
             if check_password(hashed_password, User.password):
                 return User
@@ -27,15 +27,15 @@ class Custom_User_BackendModel(BaseBackend):
                 print(User.password)
                 print("password incorrent")
                 return None
-        except New_User.DoesNotExist:
+        except NewUser.DoesNotExist:
             return None
 
-        except New_User.DoesNotExist:
+        except NewUser.DoesNotExist:
             return None
 
     def get_user(self, user_id: int) -> Optional[AbstractBaseUser]:
         try:
-            User: New_User = New_User.objects.get(user_id)
+            User: NewUser = NewUser.objects.get(user_id)
             return User
-        except New_User.DoesNotExist:
+        except NewUser.DoesNotExist:
             return None

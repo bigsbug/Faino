@@ -1,7 +1,7 @@
 import imp
 from django.contrib import admin
 from faino.AuthSystem.models import (
-    New_User,
+    NewUser,
     Temp_link,
     Confirm_User,
     Permissions,
@@ -42,7 +42,7 @@ class Permissions_Group_REGISTER(admin.ModelAdmin):
     form = Permissions_Grup_FORM
 
 
-admin.site.register(New_User, USER_ADMIN)
+admin.site.register(NewUser, USER_ADMIN)
 admin.site.register(Temp_link, TEMP_LINK_ADMIN)
 admin.site.register(Confirm_User, CONFIRM_USER_ADMIN)
 admin.site.register(Permissions_Group, Permissions_Group_REGISTER)

@@ -1,12 +1,12 @@
 from rest_framework import fields, serializers
 
 from django.conf import settings
-from faino.AuthSystem.models import New_User, Confirm_User
+from faino.AuthSystem.models import NewUser, Confirm_User
 
 
 class Serializer_User(serializers.ModelSerializer):
     class Meta:
-        model = New_User
+        model = NewUser
         fields = [
             "username",
             "password",

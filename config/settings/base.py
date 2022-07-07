@@ -91,7 +91,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "AuthSystem.New_User"
+AUTH_USER_MODEL = "AuthSystem.NewUser"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

@@ -12,7 +12,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status as Status
 
-from faino.AuthSystem.models import New_User as USER
+from faino.AuthSystem.models import NewUser as USER
 from faino.AuthSystem.models import Permissions_Group
 
 

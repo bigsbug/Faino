@@ -8,7 +8,7 @@ from uuid import uuid4
 from django.utils.crypto import get_random_string
 
 
-class New_User(AbstractUser):
+class NewUser(AbstractUser):
     phone = models.CharField(max_length=11, unique=True)
     company = models.fields.CharField(max_length=60, blank=True, null=True)
     email = models.EmailField(unique=True)
@@ -54,7 +54,7 @@ class Confirm_User(models.Model):
         chars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
         return get_random_string(8, chars)
 
-    user = models.OneToOneField(New_User, on_delete=models.CASCADE)
+    user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
     code = models.CharField(max_length=8, default=random_code, unique=True)
     token = models.UUIDField(default=uuid4, unique=True)
     expire = models.DateTimeField(default=expire_time)

@@ -4,9 +4,9 @@ from faino.WebServer.models import Device, Type, Data, Command, Button, Source_D
 from django.conf import settings
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from faino.AuthSystem.models import New_User
+from faino.AuthSystem.models import NewUser
 
-User = New_User
+User = NewUser
 
 
 def make_user() -> User:

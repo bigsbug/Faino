@@ -23,7 +23,7 @@ from faino.AuthSystem.serializer import (
     Serializer_Confirm_User,
     Serializer_Confirm,
 )
-from faino.AuthSystem.models import New_User, Confirm_User
+from faino.AuthSystem.models import NewUser, Confirm_User
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -59,7 +59,7 @@ class Confrim_Email(APIView):
         email_address = request.GET.get("email", None)
         confrim_model = None
         try:
-            user = New_User.objects.get(email=email_address)
+            user = NewUser.objects.get(email=email_address)
             data["user"] = user.pk
         except:
             return HttpResponse("invalid user")
@@ -97,7 +97,7 @@ class Confrim_Email(APIView):
     )
     def post(self, request):
         data = request.POST
-        user = get_object_or_404(New_User, email=data.get("email", None))
+        user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(Confirm_User, user=user)
 
         if confirm_user.valid_code(data.get("code", 0)) != True:
@@ -136,7 +136,7 @@ class Forget_Password(APIView):
         email_address = reqeust.GET.get("email", None)
         confrim_model = None
         try:
-            user = New_User.objects.get(email=email_address)
+            user = NewUser.objects.get(email=email_address)
             data["user"] = user.pk
         except:
             return HttpResponse("invalid user")
@@ -178,10 +178,10 @@ class Forget_Password(APIView):
     )
     def post(self, request):
         data = request.POST
-        user = get_object_or_404(New_User, email=data.get("email", None))
+        user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(Confirm_User, user=user)
 
-        # user = New_User.objects.get(email=data.get('email', None))
+        # user = NewUser.objects.get(email=data.get('email', None))
         # confirm_user = Confirm_User.objects.get(user=user)
 
         if confirm_user.valid_code(data.get("code", 0)) != True:
