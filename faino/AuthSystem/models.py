@@ -19,11 +19,7 @@ def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
 
 
 class ExpireTime(models.Model):
-    """Expire time fields and mehods in abstract mode
-
-    Args:
-        models (_type_): _description_
-    """
+    """Expire time fields and mehods in abstract mode"""
 
     def expire_time():
         return create_expire_time(seconds=10)
