@@ -40,7 +40,7 @@ class NewUser(AbstractUser):
     is_active = models.BooleanField(default=False)
 
 
-class Temp_link(ExpireTime, models.Model):
+class TempLink(ExpireTime, models.Model):
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True

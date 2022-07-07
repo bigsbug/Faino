@@ -13,7 +13,7 @@ from channels.db import database_sync_to_async
 # from asgiref.sync import sync_to_async
 from channels.exceptions import StopConsumer
 from faino.WebServer.models import Source_Device
-from faino.AuthSystem.models import Temp_link
+from faino.AuthSystem.models import TempLink
 
 # from channels.signals import
 from django.urls import reverse
@@ -93,7 +93,7 @@ class Device_WB(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def Make_link(self, ip: str) -> str:
-        temp_link = Temp_link(ip=ip, file=self.source.source)
+        temp_link = TempLink(ip=ip, file=self.source.source)
         temp_link.save()
         domain = Site.objects.all()[0].domain
         app_url = reverse("WEBSERVER:UPDATE_LINK", args=(temp_link.link,))
