@@ -1,11 +1,10 @@
-from asyncio import constants
+import random
+from datetime import timedelta
+from uuid import uuid4
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import timedelta
 from django.utils import timezone
-from uuid import uuid4
-import random
-from django.utils.crypto import get_random_string
 
 
 def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
