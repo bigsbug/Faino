@@ -95,7 +95,7 @@ class PermissionGroup(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(
         Endpoints,
-        "Permissions_of_group",
+        "endpoints",
     )
 
     def __str__(self):
