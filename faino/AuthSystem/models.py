@@ -79,7 +79,6 @@ class UserConfirm(ExpireTime, models.Model):
         return self.code
 
     def save(self, *args, **kwargs):
-        print(args, kwargs)
         super(UserConfirm, self).save(*args, **kwargs)
 
 
