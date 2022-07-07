@@ -61,8 +61,11 @@ class UserConfirm(ExpireTime, models.Model):
     LENGTH_CODE: int = 5
 
     # Generate Random Code Between 0 to 9
-    def generate_code(length: int = 5) -> str:
-        code = "".join([str(random.randint(0, 9)) for _ in range(LENGTH_CODE)])
+    @staticmethod
+    def generate_code() -> str:
+        code = "".join(
+            [str(random.randint(0, 9)) for _ in range(UserConfirm.LENGTH_CODE)]
+        )
         return code
 
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
