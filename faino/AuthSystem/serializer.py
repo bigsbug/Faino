@@ -1,7 +1,7 @@
 from rest_framework import fields, serializers
 
 from django.conf import settings
-from faino.AuthSystem.models import NewUser, Confirm_User
+from faino.AuthSystem.models import NewUser, UserConfirm
 
 
 class Serializer_User(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class Serializer_User(serializers.ModelSerializer):
 
 class Serializer_Confirm_User(serializers.ModelSerializer):
     class Meta:
-        model = Confirm_User
+        model = UserConfirm
         fields = "__all__"
 
 

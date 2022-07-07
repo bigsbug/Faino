@@ -52,7 +52,7 @@ class TempLink(ExpireTime, models.Model):
         return ip == self.ip
 
 
-class Confirm_User(ExpireTime, models.Model):
+class UserConfirm(ExpireTime, models.Model):
     LENGTH_CODE: int = 5
 
     # Generate Random Code Between 0 to 9
@@ -72,7 +72,7 @@ class Confirm_User(ExpireTime, models.Model):
 
     def save(self, *args, **kwargs):
         print(args, kwargs)
-        super(Confirm_User, self).save(*args, **kwargs)
+        super(UserConfirm, self).save(*args, **kwargs)
 
 
 class Permissions(models.Model):

@@ -23,7 +23,7 @@ from faino.AuthSystem.serializer import (
     Serializer_Confirm_User,
     Serializer_Confirm,
 )
-from faino.AuthSystem.models import NewUser, Confirm_User
+from faino.AuthSystem.models import NewUser, UserConfirm
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -53,8 +53,8 @@ class Confrim_Email(APIView):
     def get(self, request):
 
         data = request.data.copy()
-        data["expire"] = Confirm_User.expire_time()
-        data["code"] = Confirm_User.random_code()
+        data["expire"] = UserConfirm.expire_time()
+        data["code"] = UserConfirm.random_code()
 
         email_address = request.GET.get("email", None)
         confrim_model = None
@@ -66,7 +66,7 @@ class Confrim_Email(APIView):
         if user.is_active == True:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
-            confrim_model = Confirm_User.objects.get(user=user)
+            confrim_model = UserConfirm.objects.get(user=user)
         except:
             pass
 
@@ -98,7 +98,7 @@ class Confrim_Email(APIView):
     def post(self, request):
         data = request.POST
         user = get_object_or_404(NewUser, email=data.get("email", None))
-        confirm_user = get_object_or_404(Confirm_User, user=user)
+        confirm_user = get_object_or_404(UserConfirm, user=user)
 
         if confirm_user.valid_code(data.get("code", 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
@@ -130,8 +130,8 @@ class Forget_Password(APIView):
     def get(self, reqeust):
 
         data = reqeust.data.copy()
-        data["expire"] = Confirm_User.expire_time()
-        data["code"] = Confirm_User.random_code()
+        data["expire"] = UserConfirm.expire_time()
+        data["code"] = UserConfirm.random_code()
 
         email_address = reqeust.GET.get("email", None)
         confrim_model = None
@@ -142,7 +142,7 @@ class Forget_Password(APIView):
             return HttpResponse("invalid user")
 
         try:
-            confrim_model = Confirm_User.objects.get(user=user)
+            confrim_model = UserConfirm.objects.get(user=user)
         except:
             pass
 
@@ -179,10 +179,10 @@ class Forget_Password(APIView):
     def post(self, request):
         data = request.POST
         user = get_object_or_404(NewUser, email=data.get("email", None))
-        confirm_user = get_object_or_404(Confirm_User, user=user)
+        confirm_user = get_object_or_404(UserConfirm, user=user)
 
         # user = NewUser.objects.get(email=data.get('email', None))
-        # confirm_user = Confirm_User.objects.get(user=user)
+        # confirm_user = UserConfirm.objects.get(user=user)
 
         if confirm_user.valid_code(data.get("code", 0)) != True:
             return Response(status=status.HTTP_304_NOT_MODIFIED)
