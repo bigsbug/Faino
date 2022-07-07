@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status as Status
 
 from faino.AuthSystem.models import NewUser as USER
-from faino.AuthSystem.models import Permissions_Group
+from faino.AuthSystem.models import PermissionGroup
 
 
 from faino.WebServer.models import (
@@ -196,7 +196,7 @@ class Device_API(ViewSet):
                 name="OWNER",
                 user=request.user,
                 device=device,
-                type=Permissions_Group.objects.get(name="owner"),
+                type=PermissionGroup.objects.get(name="owner"),
             ).save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)

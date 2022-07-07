@@ -28,7 +28,7 @@ class ApiConfig(AppConfig):
     name = "faino.API"
 
     def ready(self):
-        from faino.AuthSystem.models import Endpoints, Permissions_Group
+        from faino.AuthSystem.models import Endpoints, PermissionGroup
 
         try:
             Create_Permissinos()
@@ -36,7 +36,7 @@ class ApiConfig(AppConfig):
             print(f"Error : {Error}")
 
         try:  # make default permission group for owner users
-            Owner_group = Permissions_Group(name="owner")
+            Owner_group = PermissionGroup(name="owner")
             Owner_group.save()
             permissions = Endpoints.objects.all()
             Owner_group.permissions.set(permissions)

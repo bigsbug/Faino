@@ -91,7 +91,7 @@ class Endpoints(models.Model):
         return f"{self.app_name} | {self.class_name} | {self.name}"
 
 
-class Permissions_Group(models.Model):
+class PermissionGroup(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(
         Endpoints,
