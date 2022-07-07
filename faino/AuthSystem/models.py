@@ -41,17 +41,6 @@ class NewUser(AbstractUser):
     is_active = models.BooleanField(default=False)
 
 
-def make_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
-
-    return timezone.now() + timedelta(
-        days=days,
-        seconds=seconds,
-        minutes=minutes,
-        hours=hours,
-        weeks=weeks,
-    )
-
-
 class Temp_link(ExpireTime, models.Model):
 
     link = models.UUIDField(
