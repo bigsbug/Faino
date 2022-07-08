@@ -31,6 +31,7 @@ class Serializer_Confirm(serializers.Serializer):
 
 
 class Serializer_Confirm_Forget(serializers.Serializer):
-    code = serializers.CharField(max_length=8)
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=UserConfirm.LENGTH_CODE)
     password = serializers.CharField(max_length=60)
     password2 = serializers.CharField(max_length=60)
