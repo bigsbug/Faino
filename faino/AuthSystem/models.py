@@ -42,7 +42,7 @@ class TempLink(models.Model):
     expire = models.DateTimeField(default=expire_time)
 
     def is_expired(self) -> bool:
-        return self.expire > timezone.now()
+        return self.expire < timezone.now()
 
     def is_valid_ip(self, ip: models.GenericIPAddressField) -> bool:
         return ip == self.ip
@@ -70,7 +70,7 @@ class UserConfirm(models.Model):
     expire = models.DateTimeField(default=expire_time)
 
     def is_expired(self) -> bool:
-        return self.expire > timezone.now()
+        return self.expire < timezone.now()
 
     def is_valid_code(self, input_code):
         return input_code == self.code
