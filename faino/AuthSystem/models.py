@@ -61,7 +61,6 @@ class UserConfirm(ExpireTime, models.Model):
     LENGTH_CODE: int = 5
 
     # Generate Random Code Between 0 to 9
-    @staticmethod
     def generate_code() -> str:
         code = "".join(
             [str(random.randint(0, 9)) for _ in range(UserConfirm.LENGTH_CODE)]
