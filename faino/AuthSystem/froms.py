@@ -1,5 +1,5 @@
 from django import forms
-from faino.AuthSystem.models import PermissionGroup, Endpoints
+from faino.AuthSystem.models import Permission, Endpoints
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
@@ -10,5 +10,5 @@ class Permissions_Grup_FORM(forms.ModelForm):
     )
 
     class Meta:
-        model = PermissionGroup
+        model = Permission
         fields = ("name",)

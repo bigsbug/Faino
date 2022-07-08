@@ -101,7 +101,7 @@ class Endpoints(models.Model):
         return f"{self.app_name} | {self.class_name} | {self.name}"
 
 
-class PermissionGroup(models.Model):
+class Permission(models.Model):
     """Grouping a set of endpoints to create permissions
     for checking which users can use each endpoint"""
 

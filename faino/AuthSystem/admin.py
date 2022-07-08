@@ -5,7 +5,7 @@ from faino.AuthSystem.models import (
     TempLink,
     UserConfirm,
     Endpoints,
-    PermissionGroup,
+    Permission,
 )
 from faino.AuthSystem.froms import Permissions_Grup_FORM
 
@@ -45,4 +45,4 @@ class Permissions_Group_REGISTER(admin.ModelAdmin):
 admin.site.register(NewUser, USER_ADMIN)
 admin.site.register(TempLink, TEMP_LINK_ADMIN)
 admin.site.register(UserConfirm, CONFIRM_USER_ADMIN)
-admin.site.register(PermissionGroup, Permissions_Group_REGISTER)
+admin.site.register(Permission, Permissions_Group_REGISTER)

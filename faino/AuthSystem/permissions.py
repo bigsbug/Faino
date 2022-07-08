@@ -1,6 +1,6 @@
 from itertools import permutations
 from rest_framework.permissions import BasePermission
-from faino.AuthSystem.models import Endpoints, PermissionGroup
+from faino.AuthSystem.models import Endpoints, Permission
 
 
 class Auto_Detect_UserDevice(BasePermission):
