@@ -7,7 +7,7 @@ from faino.AuthSystem.models import (
     Endpoint,
     Permission,
 )
-from faino.AuthSystem.froms import Permissions_Grup_FORM
+from faino.AuthSystem.froms import PermissionForm
 
 
 class USER_ADMIN(admin.ModelAdmin):
@@ -39,7 +39,7 @@ class CONFIRM_USER_ADMIN(admin.ModelAdmin):
 
 class Permissions_Group_REGISTER(admin.ModelAdmin):
     list_display = ["name"]
-    form = Permissions_Grup_FORM
+    form = PermissionForm
 
 
 admin.site.register(NewUser, USER_ADMIN)
