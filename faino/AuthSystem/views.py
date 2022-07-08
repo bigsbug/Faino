@@ -54,7 +54,7 @@ class Confrim_Email(APIView):
 
         data = request.data.copy()
         data["expire"] = UserConfirm.expire_time()
-        data["code"] = UserConfirm.random_code()
+        data["code"] = UserConfirm.generate_code()
 
         email_address = request.GET.get("email", None)
         confrim_model = None
@@ -129,7 +129,7 @@ class Forget_Password(APIView):
 
         data = reqeust.data.copy()
         data["expire"] = UserConfirm.expire_time()
-        data["code"] = UserConfirm.random_code()
+        data["code"] = UserConfirm.generate_code()
 
         email_address = reqeust.GET.get("email", None)
         confrim_model = None
