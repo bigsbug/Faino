@@ -102,6 +102,7 @@ class Confrim_Email(APIView):
 
         if confirm_user.is_expired():
             return Response(status=status.HTTP_403_FORBHTTP_408_REQUEST_TIMEOUTIDDEN)
+        elif confirm_user.is_valid_code(data.get("code", 0)) != True:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         user = confirm_user.user
