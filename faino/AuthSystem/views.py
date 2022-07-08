@@ -100,10 +100,8 @@ class Confrim_Email(APIView):
         user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(UserConfirm, user=user)
 
-        if confirm_user.is_valid_code(data.get("code", 0)) != True:
-            return Response(status=status.HTTP_304_NOT_MODIFIED)
-
-        if confirm_user.check_expired() != True:
+        if confirm_user.is_expired():
+            return Response(status=status.HTTP_403_FORBHTTP_408_REQUEST_TIMEOUTIDDEN)
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         user = confirm_user.user
@@ -188,7 +186,7 @@ class Forget_Password(APIView):
             return Response(status=status.HTTP_304_NOT_MODIFIED)
         password1 = data.get("password", 0)
         password2 = data.get("password2", 1)
-        if confirm_user.check_expired() != True:
+        if confirm_user.is_expired():
             return Response(status=status.HTTP_403_FORBIDDEN)
         if password1 != password2:
             return Response("Passwords Dosnt Match", status=status.HTTP_400_BAD_REQUEST)
