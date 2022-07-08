@@ -3,7 +3,7 @@ from django.db import IntegrityError, OperationalError
 
 
 def Create_Permissinos():
-    from faino.AuthSystem.models import Endpoints
+    from faino.AuthSystem.models import Endpoint
     from faino.API.views import Device_API
 
     list_funcation = []
@@ -11,12 +11,12 @@ def Create_Permissinos():
         if callable(value):
             list_funcation.append(key)
             try:
-                Endpoints.objects.get(name=key, app_name="API", class_name="Device")
+                Endpoint.objects.get(name=key, app_name="API", class_name="Device")
             except:
-                Endpoints(name=key, app_name="API", class_name="Device").save()
+                Endpoint(name=key, app_name="API", class_name="Device").save()
 
     # Remove not found endpoints
-    for item in Endpoints.objects.filter(app_name="API", class_name="Device"):
+    for item in Endpoint.objects.filter(app_name="API", class_name="Device"):
 
         if item.name not in list_funcation:
             print(item.name)
@@ -28,7 +28,7 @@ class ApiConfig(AppConfig):
     name = "faino.API"
 
     def ready(self):
-        from faino.AuthSystem.models import Endpoints, Permission
+        from faino.AuthSystem.models import Endpoint, Permission
 
         try:
             Create_Permissinos()
@@ -38,8 +38,8 @@ class ApiConfig(AppConfig):
         try:  # make default permission group for owner users
             Owner_group = Permission(name="owner")
             Owner_group.save()
-            permissions = Endpoints.objects.all()
-            Owner_group.permissions.set(permissions)
+            endpoints = Endpoint.objects.all()
+            Owner_group.endpoints.set(endpoints)
             DEFAULT_TYPE = Owner_group.save()
         except IntegrityError:
             ...

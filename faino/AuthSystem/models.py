@@ -82,7 +82,7 @@ class UserConfirm(models.Model):
         super(UserConfirm, self).save(*args, **kwargs)
 
 
-class Endpoints(models.Model):
+class Endpoint(models.Model):
     """Creating a record for each endpoint for use in the permission system
     with the name of the endpoint and the class name and the app name"""
 
@@ -106,8 +106,8 @@ class Permission(models.Model):
     for checking which users can use each endpoint"""
 
     name = models.CharField(max_length=20, unique=True)
-    permissions = models.ManyToManyField(
-        Endpoints,
+    endpoints = models.ManyToManyField(
+        Endpoint,
         "endpoints",
     )
 
