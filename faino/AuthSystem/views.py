@@ -102,8 +102,8 @@ class Confrim_Email(APIView):
 
         if confirm_user.is_expired():
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        elif confirm_user.is_valid_code(data.get("code", 0)) != True:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        elif not confirm_user.is_valid_code(data.get("code", 0)):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         user = confirm_user.user
         user.is_active = True
@@ -183,8 +183,8 @@ class Forget_Password(APIView):
         # user = NewUser.objects.get(email=data.get('email', None))
         # confirm_user = UserConfirm.objects.get(user=user)
 
-        if confirm_user.is_valid_code(data.get("code", 0)) != True:
-            return Response(status=status.HTTP_304_NOT_MODIFIED)
+        if not confirm_user.is_valid_code(data.get("code", 0)):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         password1 = data.get("password", 0)
         password2 = data.get("password2", 1)
         if confirm_user.is_expired():
