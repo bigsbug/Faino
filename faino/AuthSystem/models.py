@@ -73,9 +73,14 @@ class UserConfirm(Expirable):
     code = models.CharField(max_length=LENGTH_CODE, unique=True, blank=True)
     token = models.UUIDField(unique=True, blank=True)
 
+    def is_valid_code(self, input_code):
+        return input_code == self.code
+
+    def is_valid_token(self, input_token):
+        return input_token == self.token
 
     # Generate Random Code Between 0 to 9
-    def generate_code() -> str:
+    def generate_code(self) -> str:
         code = "".join(
             [str(random.randint(0, 9)) for _ in range(UserConfirm.LENGTH_CODE)]
         )
@@ -85,6 +90,9 @@ class UserConfirm(Expirable):
         return self.code
 
     def save(self, *args, **kwargs):
+        # Generate new Keys every time when a UserConfirm is saved
+        self.code = self.generate_code()
+        self.token = uuid4()
         super(UserConfirm, self).save(*args, **kwargs)
 
 
