@@ -57,7 +57,7 @@ class Confrim_Email(APIView):
 
         # Try to fetch a user with the passed email
         user = get_object_or_404(NewUser, email=email_address)
-            data["user"] = user.pk
+        data["user"] = user.pk
 
         if user.is_active:
             return Response(
@@ -135,21 +135,19 @@ class Forget_Password(APIView):
 
         data = reqeust.data.copy()
         email_address = reqeust.GET.get("email", None)
-        confrim_model = None
-        try:
-            user = NewUser.objects.get(email=email_address)
-            data["user"] = user.pk
-        except:
-            return HttpResponse("invalid user")
+
+        user = get_object_or_404(NewUser, email=email_address)
+        data["user"] = user.pk
 
         try:
             confrim_model = UserConfirm.objects.get(user=user)
         except:
-            pass
+            confrim_model = None
 
         confirm = Serializer_Confirm_User(
             instance=confrim_model, data=data, partial=True
         )
+
         if confirm.is_valid(True):
             confirm = confirm.save()
 
@@ -164,7 +162,7 @@ class Forget_Password(APIView):
             html_template,
         )
 
-        return HttpResponse("check you email")
+        return Response("check you email", status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="Confirm activation code ",
@@ -178,26 +176,30 @@ class Forget_Password(APIView):
         },
     )
     def post(self, request):
+
         data = request.POST
         user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(UserConfirm, user=user)
 
-        # user = NewUser.objects.get(email=data.get('email', None))
-        # confirm_user = UserConfirm.objects.get(user=user)
+        if confirm_user.is_expired():
+            return Response("code is expired", status=status.HTTP_401_UNAUTHORIZED)
+        elif not confirm_user.is_valid_code(data.get("code", 0)):
+            return Response("code is invalid", status=status.HTTP_401_UNAUTHORIZED)
 
-        if not confirm_user.is_valid_code(data.get("code", 0)):
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         password1 = data.get("password", 0)
         password2 = data.get("password2", 1)
-        if confirm_user.is_expired():
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         if password1 != password2:
-            return Response("Passwords Dosnt Match", status=status.HTTP_400_BAD_REQUEST)
-        user = confirm_user.user
+            return Response(
+                "Passwords Dosnt Match", status=status.HTTP_401_UNAUTHORIZED
+            )
+
         user.set_password(password1)
         user.save()
+
         confirm_user.delete()
-        return Response(f"password changed to {password1}")
+
+        return Response(f"password changed", status=status.HTTP_200_OK)
 
 
 class User_API(APIView):
