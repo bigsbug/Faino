@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 
-def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
+def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0) -> timezone:
 
     return timezone.now() + timedelta(
         days=days,
@@ -21,7 +21,8 @@ def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
 class Expirable(models.Model):
     """Expire time fields and methods in abstract mode"""
 
-    expire_time_as_sec = 20
+    # Default Expire Time
+    expire_time_as_sec: int = 20
 
     expire = models.DateTimeField(blank=True, null=True)
 
@@ -32,8 +33,9 @@ class Expirable(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
-        # set or update expire time for requested code
+    def save(self, *args, **kwargs) -> "Expirable":
+
+        # set or update expire time for everytime
         self.expire = create_expire_time(seconds=self.expire_time_as_sec)
         super().save(*args, **kwargs)
 
@@ -50,7 +52,7 @@ class NewUser(AbstractUser):
 class TempLink(Expirable):
     """Temp link for provide some files with security"""
 
-    expire_time_as_sec = 10
+    expire_time_as_sec: int = 10
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True
@@ -67,16 +69,16 @@ class UserConfirm(Expirable):
 
     LENGTH_CODE: int = 5
 
-    expire_time_as_sec = 120
+    expire_time_as_sec: int = 120
 
     user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
     code = models.CharField(max_length=LENGTH_CODE, unique=True, blank=True)
     token = models.UUIDField(unique=True, blank=True)
 
-    def is_valid_code(self, input_code):
+    def is_valid_code(self, input_code) -> bool:
         return input_code == self.code
 
-    def is_valid_token(self, input_token):
+    def is_valid_token(self, input_token) -> bool:
         return input_token == self.token
 
     # Generate Random Code Between 0 to 9
@@ -89,7 +91,7 @@ class UserConfirm(Expirable):
     def __str__(self) -> str:
         return self.code
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> "UserConfirm":
         # Generate new Keys every time when a UserConfirm is saved
         self.code = self.generate_code()
         self.token = uuid4()
@@ -111,7 +113,7 @@ class Endpoint(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.app_name} | {self.class_name} | {self.name}"
 
 
@@ -125,5 +127,5 @@ class Permission(models.Model):
         "endpoints",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
