@@ -1,12 +1,12 @@
 from rest_framework import fields, serializers
 
 from django.conf import settings
-from faino.AuthSystem.models import New_User, Confirm_User
+from faino.AuthSystem.models import NewUser, UserConfirm
 
 
 class Serializer_User(serializers.ModelSerializer):
     class Meta:
-        model = New_User
+        model = NewUser
         fields = [
             "username",
             "password",
@@ -21,7 +21,7 @@ class Serializer_User(serializers.ModelSerializer):
 
 class Serializer_Confirm_User(serializers.ModelSerializer):
     class Meta:
-        model = Confirm_User
+        model = UserConfirm
         fields = "__all__"
 
 
@@ -31,6 +31,7 @@ class Serializer_Confirm(serializers.Serializer):
 
 
 class Serializer_Confirm_Forget(serializers.Serializer):
-    code = serializers.CharField(max_length=8)
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=UserConfirm.LENGTH_CODE)
     password = serializers.CharField(max_length=60)
     password2 = serializers.CharField(max_length=60)

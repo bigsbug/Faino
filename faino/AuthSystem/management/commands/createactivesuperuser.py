@@ -3,7 +3,7 @@ from getpass import getpass
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 
-from faino.AuthSystem.models import New_User
+from faino.AuthSystem.models import NewUser
 
 
 class Command(BaseCommand):
@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 break
 
         try:
-            user = New_User(username=username, phone=phone, email=email)
+            user = NewUser(username=username, phone=phone, email=email)
             user.set_password(password)
             user.is_active = True
             user.is_superuser = True

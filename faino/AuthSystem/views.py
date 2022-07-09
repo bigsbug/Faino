@@ -23,7 +23,7 @@ from faino.AuthSystem.serializer import (
     Serializer_Confirm_User,
     Serializer_Confirm,
 )
-from faino.AuthSystem.models import New_User, Confirm_User
+from faino.AuthSystem.models import NewUser, UserConfirm
 
 
 def SendEmail(subject: str, body: str, email: list, html: str):
@@ -53,28 +53,30 @@ class Confrim_Email(APIView):
     def get(self, request):
 
         data = request.data.copy()
-        data["expire"] = Confirm_User.expire_time()
-        data["code"] = Confirm_User.random_code()
-
         email_address = request.GET.get("email", None)
-        confrim_model = None
+
+        # Try to fetch a user with the passed email
+        user = get_object_or_404(NewUser, email=email_address)
+        data["user"] = user.pk
+
+        if user.is_active:
+            return Response(
+                "this user is active", status=status.HTTP_406_NOT_ACCEPTABLE
+            )
+
+        # Try to get exitst userconfirm record to update it
         try:
-            user = New_User.objects.get(email=email_address)
-            data["user"] = user.pk
+            confrim_model = UserConfirm.objects.get(user=user)
         except:
-            return HttpResponse("invalid user")
-        if user.is_active == True:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        try:
-            confrim_model = Confirm_User.objects.get(user=user)
-        except:
-            pass
+            confrim_model = None
 
         confirm = Serializer_Confirm_User(
             instance=confrim_model, data=data, partial=True
         )
+
         if confirm.is_valid(True):
             confirm = confirm.save()
+
         template = "verify_account.html"
         context = {
             "active_code": confirm.code,
@@ -89,7 +91,7 @@ class Confrim_Email(APIView):
             html_template,
         )
 
-        return HttpResponse("check your email")
+        return Response("check your email", status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="Confirm activation code ",
@@ -97,21 +99,23 @@ class Confrim_Email(APIView):
     )
     def post(self, request):
         data = request.POST
-        user = get_object_or_404(New_User, email=data.get("email", None))
-        confirm_user = get_object_or_404(Confirm_User, user=user)
 
-        if confirm_user.valid_code(data.get("code", 0)) != True:
-            return Response(status=status.HTTP_304_NOT_MODIFIED)
+        # Try to fetch a user with the passed email
+        user = get_object_or_404(NewUser, email=data.get("email", None))
+        confirm_user = get_object_or_404(UserConfirm, user=user)
 
-        if confirm_user.check_expired() != True:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        if confirm_user.is_expired():
+            return Response("code is expired", status=status.HTTP_401_UNAUTHORIZED)
+        elif not confirm_user.is_valid_code(data.get("code", 0)):
+            return Response("code is invalid", status=status.HTTP_401_UNAUTHORIZED)
 
         user = confirm_user.user
         user.is_active = True
         user.save()
+
         confirm_user.delete()
 
-        return Response(f"Your account is now activated")
+        return Response(f"Your account is now activated", status=status.HTTP_200_OK)
 
 
 class Forget_Password(APIView):
@@ -130,25 +134,20 @@ class Forget_Password(APIView):
     def get(self, reqeust):
 
         data = reqeust.data.copy()
-        data["expire"] = Confirm_User.expire_time()
-        data["code"] = Confirm_User.random_code()
-
         email_address = reqeust.GET.get("email", None)
-        confrim_model = None
-        try:
-            user = New_User.objects.get(email=email_address)
-            data["user"] = user.pk
-        except:
-            return HttpResponse("invalid user")
+
+        user = get_object_or_404(NewUser, email=email_address)
+        data["user"] = user.pk
 
         try:
-            confrim_model = Confirm_User.objects.get(user=user)
+            confrim_model = UserConfirm.objects.get(user=user)
         except:
-            pass
+            confrim_model = None
 
         confirm = Serializer_Confirm_User(
             instance=confrim_model, data=data, partial=True
         )
+
         if confirm.is_valid(True):
             confirm = confirm.save()
 
@@ -163,7 +162,7 @@ class Forget_Password(APIView):
             html_template,
         )
 
-        return HttpResponse("check you email")
+        return Response("check you email", status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="Confirm activation code ",
@@ -177,26 +176,30 @@ class Forget_Password(APIView):
         },
     )
     def post(self, request):
+
         data = request.POST
-        user = get_object_or_404(New_User, email=data.get("email", None))
-        confirm_user = get_object_or_404(Confirm_User, user=user)
+        user = get_object_or_404(NewUser, email=data.get("email", None))
+        confirm_user = get_object_or_404(UserConfirm, user=user)
 
-        # user = New_User.objects.get(email=data.get('email', None))
-        # confirm_user = Confirm_User.objects.get(user=user)
+        if confirm_user.is_expired():
+            return Response("code is expired", status=status.HTTP_401_UNAUTHORIZED)
+        elif not confirm_user.is_valid_code(data.get("code", 0)):
+            return Response("code is invalid", status=status.HTTP_401_UNAUTHORIZED)
 
-        if confirm_user.valid_code(data.get("code", 0)) != True:
-            return Response(status=status.HTTP_304_NOT_MODIFIED)
         password1 = data.get("password", 0)
         password2 = data.get("password2", 1)
-        if confirm_user.check_expired() != True:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+
         if password1 != password2:
-            return Response("Passwords Dosnt Match", status=status.HTTP_400_BAD_REQUEST)
-        user = confirm_user.user
+            return Response(
+                "Passwords Dosnt Match", status=status.HTTP_401_UNAUTHORIZED
+            )
+
         user.set_password(password1)
         user.save()
+
         confirm_user.delete()
-        return Response(f"password changed to {password1}")
+
+        return Response(f"password changed", status=status.HTTP_200_OK)
 
 
 class User_API(APIView):
@@ -275,45 +278,3 @@ class User_API(APIView):
     )
     def patch(self, request):
         return self.put(request, partial=True)
-
-
-def get_all_urls(reqeust):
-    print(django_reverse(current_app="api"))
-    return Response()
-
-
-# class User(ViewSet):
-#     def hash_password(self, password: str) -> str:
-#         hashed_password: str = make_password(password)
-#         return hashed_password
-
-#     def list(self, request):
-#         queryset = request.user
-#         serializer = Serializer_User(queryset)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def create(self, request):
-#         data = request.data
-#         serializer = Serializer_User(data=data)
-
-#         if serializer.is_valid(True):
-#             password: str = serializer.validated_data["password"]
-#             hashed_password = self.hash_password(password)
-#             serializer.save(password=hashed_password)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#     def partial_update(self, request):
-#         data = request.data
-#         user = request.user
-#         serializser = Serializer_User(user, data, partial=True)
-#         if serializser.is_valid(True):
-#             serializser.save()
-#             return Response(serializser.data, status=status.HTTP_200_OK)
-
-#     def update(self, request, pk=None):
-#         data = request.data
-#         user = request.user
-#         serializser = Serializer_User(user, data, partial=True)
-#         if serializser.is_valid(True):
-#             serializser.save()
-#             return Response(serializser.data, status=status.HTTP_200_OK)

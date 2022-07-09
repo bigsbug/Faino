@@ -10,7 +10,7 @@
 
 # # from rest_framework.reverse import reverse
 # from django.urls import reverse
-# from faino.AuthSystem.models import New_User as User
+# from faino.AuthSystem.models import NewUser as User
 # from faino.WebServer.api_v1.views import Device as Device_API
 # from faino.WebServer.api_v1.urls import Router
 

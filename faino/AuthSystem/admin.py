@@ -1,13 +1,13 @@
 import imp
 from django.contrib import admin
 from faino.AuthSystem.models import (
-    New_User,
-    Temp_link,
-    Confirm_User,
-    Permissions,
-    Permissions_Group,
+    NewUser,
+    TempLink,
+    UserConfirm,
+    Endpoint,
+    Permission,
 )
-from faino.AuthSystem.froms import Permissions_Grup_FORM
+from faino.AuthSystem.froms import PermissionForm
 
 
 class USER_ADMIN(admin.ModelAdmin):
@@ -39,10 +39,10 @@ class CONFIRM_USER_ADMIN(admin.ModelAdmin):
 
 class Permissions_Group_REGISTER(admin.ModelAdmin):
     list_display = ["name"]
-    form = Permissions_Grup_FORM
+    form = PermissionForm
 
 
-admin.site.register(New_User, USER_ADMIN)
-admin.site.register(Temp_link, TEMP_LINK_ADMIN)
-admin.site.register(Confirm_User, CONFIRM_USER_ADMIN)
-admin.site.register(Permissions_Group, Permissions_Group_REGISTER)
+admin.site.register(NewUser, USER_ADMIN)
+admin.site.register(TempLink, TEMP_LINK_ADMIN)
+admin.site.register(UserConfirm, CONFIRM_USER_ADMIN)
+admin.site.register(Permission, Permissions_Group_REGISTER)
