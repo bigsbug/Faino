@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 # from django.conf.global_settings import AUTH_USER_MODEL
 from uuid import uuid4
 
-from faino.AuthSystem.models import Permissions_Group
+from faino.AuthSystem.models import Permission
 
 from django.conf import settings
 
@@ -90,7 +90,7 @@ class UserDevice(models.Model):
         User, on_delete=models.DO_NOTHING, related_name="UserDevice"
     )
     device = models.ForeignKey(Device, models.CASCADE, related_name="UserDevice")
-    type = models.ForeignKey(Permissions_Group, models.SET_NULL, null=True)
+    type = models.ForeignKey(Permission, models.SET_NULL, null=True)
 
     token = models.UUIDField(default=uuid4, editable=False, unique=True)
     join_time = models.DateTimeField(auto_now_add=True)

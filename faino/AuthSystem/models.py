@@ -1,23 +1,13 @@
-from asyncio import constants
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+import random
 from datetime import timedelta
-from django.utils import timezone
 from uuid import uuid4
 
-from django.utils.crypto import get_random_string
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
-class New_User(AbstractUser):
-    phone = models.CharField(max_length=11, unique=True)
-    company = models.fields.CharField(max_length=60, blank=True, null=True)
-    email = models.EmailField(unique=True)
-    membership = models.DateTimeField(blank=True, null=True)
-    is_staff = models.BooleanField(default=True)
-    is_active = models.BooleanField(default=False)
-
-
-def make_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
+def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0) -> timezone:
 
     return timezone.now() + timedelta(
         days=days,
@@ -28,52 +18,90 @@ def make_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
     )
 
 
-class Temp_link(models.Model):
-    def expire_time():
-        return make_expire_time(seconds=10)
+class Expirable(models.Model):
+    """Expire time fields and methods in abstract mode"""
+
+    # Default Expire Time
+    expire_time_as_sec: int = 20
+
+    expire = models.DateTimeField(blank=True, null=True)
+
+    def is_expired(self) -> bool:
+        print(self.expire, "<", timezone.now(), ":", self.expire < timezone.now())
+        return self.expire < timezone.now()
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+
+        # set or update expire time for everytime
+        self.expire = create_expire_time(seconds=self.expire_time_as_sec)
+        super().save(*args, **kwargs)
+
+
+class NewUser(AbstractUser):
+    phone = models.CharField(max_length=11, unique=True)
+    company = models.fields.CharField(max_length=60, blank=True, null=True)
+    email = models.EmailField(unique=True)
+    membership = models.DateTimeField(blank=True, null=True)
+    is_staff = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+
+
+class TempLink(Expirable):
+    """Temp link for provide some files with security"""
+
+    expire_time_as_sec: int = 10
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True
     )
-    expire = models.DateTimeField(default=expire_time)
     ip = models.GenericIPAddressField()
     file = models.FileField()
 
-    def check_expired(self) -> bool:
-        return self.expire > timezone.now()
-
-    def check_ip(self, ip: models.GenericIPAddressField) -> bool:
+    def is_valid_ip(self, ip: models.GenericIPAddressField) -> bool:
         return ip == self.ip
 
 
-class Confirm_User(models.Model):
-    def expire_time():
-        return make_expire_time(hours=2)
+class UserConfirm(Expirable):
+    """confirm user activate wiht random code"""
 
-    def random_code():
-        chars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-        return get_random_string(8, chars)
+    LENGTH_CODE: int = 5
 
-    user = models.OneToOneField(New_User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=8, default=random_code, unique=True)
-    token = models.UUIDField(default=uuid4, unique=True)
-    expire = models.DateTimeField(default=expire_time)
+    expire_time_as_sec: int = 120
 
-    def check_expired(self):
-        return self.expire > timezone.now()
+    user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
+    code = models.CharField(max_length=LENGTH_CODE, unique=True, blank=True)
+    token = models.UUIDField(unique=True, blank=True)
 
-    def valid_code(self, input_code):
+    def is_valid_code(self, input_code) -> bool:
         return input_code == self.code
+
+    def is_valid_token(self, input_token) -> bool:
+        return input_token == self.token
+
+    # Generate Random Code Between 0 to 9
+    def generate_code(self) -> str:
+        code = "".join(
+            [str(random.randint(0, 9)) for _ in range(UserConfirm.LENGTH_CODE)]
+        )
+        return code
 
     def __str__(self) -> str:
         return self.code
 
     def save(self, *args, **kwargs):
-        print(args, kwargs)
-        super(Confirm_User, self).save(*args, **kwargs)
+        # Generate new Keys every time when a UserConfirm is saved
+        self.code = self.generate_code()
+        self.token = uuid4()
+        super(UserConfirm, self).save(*args, **kwargs)
 
 
-class Permissions(models.Model):
+class Endpoint(models.Model):
+    """Creating a record for each endpoint for use in the permission system
+    with the name of the endpoint and the class name and the app name"""
+
     name = models.CharField(max_length=100)
     app_name = models.CharField(max_length=100)
     class_name = models.CharField(max_length=100)
@@ -85,16 +113,19 @@ class Permissions(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.app_name} | {self.class_name} | {self.name}"
 
 
-class Permissions_Group(models.Model):
+class Permission(models.Model):
+    """Grouping a set of endpoints to create permissions
+    for checking which users can use each endpoint"""
+
     name = models.CharField(max_length=20, unique=True)
-    permissions = models.ManyToManyField(
-        Permissions,
-        "Permissions_of_group",
+    endpoints = models.ManyToManyField(
+        Endpoint,
+        "endpoints",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
