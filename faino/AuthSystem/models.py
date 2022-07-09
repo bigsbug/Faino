@@ -33,7 +33,7 @@ class Expirable(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs) -> "Expirable":
+    def save(self, *args, **kwargs):
 
         # set or update expire time for everytime
         self.expire = create_expire_time(seconds=self.expire_time_as_sec)
@@ -91,7 +91,7 @@ class UserConfirm(Expirable):
     def __str__(self) -> str:
         return self.code
 
-    def save(self, *args, **kwargs) -> "UserConfirm":
+    def save(self, *args, **kwargs):
         # Generate new Keys every time when a UserConfirm is saved
         self.code = self.generate_code()
         self.token = uuid4()
