@@ -18,6 +18,26 @@ def create_expire_time(days=0, seconds=0, minutes=0, hours=0, weeks=0):
     )
 
 
+class Expirable(models.Model):
+    """Expire time fields and methods in abstract mode"""
+
+    expire_time_as_sec = 20
+
+    expire = models.DateTimeField(blank=True, null=True)
+
+    def is_expired(self) -> bool:
+        print(self.expire, "<", timezone.now(), ":", self.expire < timezone.now())
+        return self.expire < timezone.now()
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        # set or update expire time for requested code
+        self.expire = create_expire_time(seconds=self.expire_time_as_sec)
+        super().save(*args, **kwargs)
+
+
 class NewUser(AbstractUser):
     phone = models.CharField(max_length=11, unique=True)
     company = models.fields.CharField(max_length=60, blank=True, null=True)
@@ -27,22 +47,16 @@ class NewUser(AbstractUser):
     is_active = models.BooleanField(default=False)
 
 
-class TempLink(models.Model):
+class TempLink(Expirable):
     """Temp link for provide some files with security"""
 
-    def expire_time():
-        return create_expire_time(seconds=10)
+    expire_time_as_sec = 10
 
     link = models.UUIDField(
         primary_key=True, default=uuid4, editable=False, unique=True
     )
     ip = models.GenericIPAddressField()
     file = models.FileField()
-
-    expire = models.DateTimeField(default=expire_time)
-
-    def is_expired(self) -> bool:
-        return self.expire < timezone.now()
 
     def is_valid_ip(self, ip: models.GenericIPAddressField) -> bool:
         return ip == self.ip
@@ -66,18 +80,6 @@ class UserConfirm(Expirable):
             [str(random.randint(0, 9)) for _ in range(UserConfirm.LENGTH_CODE)]
         )
         return code
-
-    user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
-    code = models.CharField(max_length=LENGTH_CODE, default=generate_code, unique=True)
-    token = models.UUIDField(default=uuid4, unique=True)
-
-    expire = models.DateTimeField(default=expire_time)
-
-    def is_expired(self) -> bool:
-        return self.expire < timezone.now()
-
-    def is_valid_code(self, input_code):
-        return input_code == self.code
 
     def __str__(self) -> str:
         return self.code
