@@ -48,13 +48,17 @@ class TempLink(models.Model):
         return ip == self.ip
 
 
-class UserConfirm(models.Model):
+class UserConfirm(Expirable):
     """confirm user activate wiht random code"""
 
     LENGTH_CODE: int = 5
 
-    def expire_time():
-        return create_expire_time(seconds=120)
+    expire_time_as_sec = 120
+
+    user = models.OneToOneField(NewUser, on_delete=models.CASCADE)
+    code = models.CharField(max_length=LENGTH_CODE, unique=True, blank=True)
+    token = models.UUIDField(unique=True, blank=True)
+
 
     # Generate Random Code Between 0 to 9
     def generate_code() -> str:
