@@ -54,25 +54,29 @@ class Confrim_Email(APIView):
 
         data = request.data.copy()
         email_address = request.GET.get("email", None)
-        confrim_model = None
 
-        try:
-            user = NewUser.objects.get(email=email_address)
+        # Try to fetch a user with the passed email
+        user = get_object_or_404(NewUser, email=email_address)
             data["user"] = user.pk
-        except:
-            return HttpResponse("invalid user")
-        if user.is_active == True:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        if user.is_active:
+            return Response(
+                "this user is active", status=status.HTTP_406_NOT_ACCEPTABLE
+            )
+
+        # Try to get exitst userconfirm record to update it
         try:
             confrim_model = UserConfirm.objects.get(user=user)
         except:
-            pass
+            confrim_model = None
 
         confirm = Serializer_Confirm_User(
             instance=confrim_model, data=data, partial=True
         )
+
         if confirm.is_valid(True):
             confirm = confirm.save()
+
         template = "verify_account.html"
         context = {
             "active_code": confirm.code,
@@ -87,7 +91,7 @@ class Confrim_Email(APIView):
             html_template,
         )
 
-        return HttpResponse("check your email")
+        return Response("check your email", status=status.HTTP_200_OK)
 
     @extend_schema(
         summary="Confirm activation code ",
@@ -95,20 +99,23 @@ class Confrim_Email(APIView):
     )
     def post(self, request):
         data = request.POST
+
+        # Try to fetch a user with the passed email
         user = get_object_or_404(NewUser, email=data.get("email", None))
         confirm_user = get_object_or_404(UserConfirm, user=user)
 
         if confirm_user.is_expired():
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response("code is expired", status=status.HTTP_401_UNAUTHORIZED)
         elif not confirm_user.is_valid_code(data.get("code", 0)):
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response("code is invalid", status=status.HTTP_401_UNAUTHORIZED)
 
         user = confirm_user.user
         user.is_active = True
         user.save()
+
         confirm_user.delete()
 
-        return Response(f"Your account is now activated")
+        return Response(f"Your account is now activated", status=status.HTTP_200_OK)
 
 
 class Forget_Password(APIView):
